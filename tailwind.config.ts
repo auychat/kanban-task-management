@@ -33,10 +33,10 @@ const config: Config = {
         'white': '#FFFFFF',
         'red': '#EA5555',
         'red-light': '#FF9898',
-      }
+      },
     },
   },
-  darkMode: 'class',
+  darkMode: ['class'],
   plugins: [nextui()],
 }
 export default config
