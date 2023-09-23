@@ -1,12 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { boardsData } from "@/app/pages/api/data.js";
 import DarkModeToggle from "./DarkModeToggle";
 import { ThemeContext } from "@/context/ThemeContext";
+import AddBoardModal from "../modal/AddBoardModal";
 
 const Sidebar = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const context = useContext(ThemeContext);
   // Check if the context is undefinded.
   if (!context) {
@@ -29,6 +32,16 @@ const Sidebar = () => {
       setSelectedBoard(boardsData[0].name);
     }
   }, [selectedBoard, setSelectedBoard]);
+
+  // Handle the modal open
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+
+  // Handle the modal close
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -85,7 +98,10 @@ const Sidebar = () => {
                 </div>
               ))}
 
-              <div className="flex flex-row gap-4 items-center">
+              <div
+                className="flex flex-row gap-4 items-center cursor-pointer"
+                onClick={handleModalOpen}
+              >
                 <Image
                   src="./assets/icon-board.svg"
                   alt="board-icon"
@@ -93,10 +109,12 @@ const Sidebar = () => {
                   height={16}
                   className="w-4 h-4"
                 />
-                <h4 className="text-purple-dark text-hm font-bold">
+                <h4 className="text-purple-dark text-hm font-bold hover:text-purple-light transition-colors duration-300">
                   + Create New Board
                 </h4>
               </div>
+              {/* Open Modal */}
+              {isModalOpen && <AddBoardModal closeModal={handleModalClose} />}
             </div>
           </div>
           {/* Bottom Section */}

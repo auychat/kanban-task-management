@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Button } from "@nextui-org/button";
 import { ThemeContext } from "@/context/ThemeContext";
 import Image from "next/image";
+import EditBoardModal from "../modal/EditBoardModal";
 
 const Content = () => {
+  const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
   const context = useContext(ThemeContext);
   // Check if the context is undefinded.
   if (!context) {
@@ -13,6 +15,16 @@ const Content = () => {
   }
   // Otherwise, return the context value.
   const { mode, hideSidebar, toggleHideSidebar } = context;
+
+  // Handle the edit board modal open
+  const handleEditBoardModalOpen = () => {
+    setIsEditBoardModalOpen(true);
+  };
+
+  // Handle the edit board modal close
+  const handleEditBoardModalClose = () => {
+    setIsEditBoardModalOpen(false);
+  };
 
   return (
     <div className="relative max-w-[1140px] h-[calc(100vh-96px)] bg-blue-lighter dark:bg-gray-darker flex items-center justify-center">
@@ -22,11 +34,15 @@ const Content = () => {
         </h2>
         <Button
           radius="full"
+          onClick={handleEditBoardModalOpen}
           className="bg-purple-dark hover:bg-purple-light h-12 w-[164px] text-hm font-bold text-white"
         >
           +Add New Column
         </Button>
       </div>
+
+      {/* Open edit board modal */}
+      {isEditBoardModalOpen && <EditBoardModal closeEditBoardModal={handleEditBoardModalClose} />}
 
       {/* Absolute position for the  */}
       {hideSidebar && (
