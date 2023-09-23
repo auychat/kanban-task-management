@@ -17,12 +17,13 @@ const Topbar = () => {
     mode === "light" ? "/assets/logo-dark.svg" : "/assets/logo-light.svg";
 
   return (
-    <div className="max-h-[96px] max-w-[1140px] h-full w-screen border-1 border-l-0 border-blue-lightest dark:border-gray-medium bg-white dark:bg-gray-dark flex flex-row justify-between items-center p-6">
+    <div className="relative max-h-[96px] max-w-[1140px] h-full w-screen border-1 border-l-0 border-blue-lightest dark:border-gray-medium bg-white dark:bg-gray-dark flex flex-row justify-between items-center p-6">
       <div className="flex flex-row gap-8 items-center">
         {/* Logo Section */}
         <>
           {hideSidebar && (
-            <div className="flex p-8">
+            <div className="flex pr-8">
+              <div className="absolute border-r border-blue-lightest dark:border-gray-medium min-h-[96px] h-full top-0 left-[210px] z-10"></div>
               <Image
                 src={logoSrc}
                 alt="logo"

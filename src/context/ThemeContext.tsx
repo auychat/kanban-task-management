@@ -8,6 +8,8 @@ type ThemeContextType = {
   toggle: () => void;
   hideSidebar: boolean;
   toggleHideSidebar: () => void;
+  selectedBoard: string | null;
+  setSelectedBoard: (board: string | null) => void;
 };
 
 // Create the context with the default value
@@ -18,6 +20,7 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState("light");
   const [hideSidebar, setHideSidebar] = useState(false);
+  const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
 
   const toggle = () => {
     setMode((prev) => (prev === "light" ? "dark" : "light"));
@@ -34,7 +37,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <ThemeContext.Provider value={{ mode, toggle, hideSidebar, toggleHideSidebar }}>
+    <ThemeContext.Provider value={{ mode, toggle, hideSidebar, toggleHideSidebar, selectedBoard, setSelectedBoard }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -22,7 +22,7 @@ const Content = () => {
         </h2>
         <Button
           radius="full"
-          className="bg-purple-dark h-12 w-[164px] text-hm font-bold text-white"
+          className="bg-purple-dark hover:bg-purple-light h-12 w-[164px] text-hm font-bold text-white"
         >
           +Add New Column
         </Button>
@@ -31,7 +31,7 @@ const Content = () => {
       {/* Absolute position for the  */}
       {hideSidebar && (
         <div
-          className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark dark:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
+          className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
           onClick={toggleHideSidebar}
         >
           <Image
