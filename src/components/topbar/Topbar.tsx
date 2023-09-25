@@ -5,9 +5,13 @@ import { Button } from "@nextui-org/button";
 import { ThemeContext } from "@/context/ThemeContext";
 import Image from "next/image";
 import AddTaskModal from "../modal/AddTaskModal";
+import { boardsData } from "@/app/pages/api/data";
+import { BoardContext } from "@/context/BoardContext";
 
 const Topbar = () => {
   const [isTaskModalOpen, setTaskModalOpen] = useState(false);
+
+  const {selectedBoard } = useContext(BoardContext);
 
   const context = useContext(ThemeContext);
   // Check if the context is undefinded.
@@ -29,6 +33,9 @@ const Topbar = () => {
     setTaskModalOpen(false);
   };
 
+
+
+
   return (
     <div className="relative max-h-[96px] max-w-[1140px] h-full w-screen border-1 border-l-0 border-blue-lightest dark:border-gray-medium bg-white dark:bg-gray-dark flex flex-row justify-between items-center p-6">
       <div className="flex flex-row gap-8 items-center">
@@ -47,7 +54,7 @@ const Topbar = () => {
             </div>
           )}
         </>
-        <h1 className="text-hxl font-bold dark:text-white">Platform Launch</h1>
+        <h1 className="text-hxl font-bold dark:text-white">{selectedBoard}</h1>
       </div>
       <div className="flex flex-row gap-6">
         <Button

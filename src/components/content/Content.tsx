@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/button";
 import { ThemeContext } from "@/context/ThemeContext";
 import Image from "next/image";
 import EditBoardModal from "../modal/EditBoardModal";
-import { boardsData } from "@/app/pages/api/data";
+import { BoardContext } from "@/context/BoardContext";
 
 interface IColumn {
   name: string;
@@ -14,6 +14,11 @@ interface IColumn {
 
 const Content = () => {
   const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
+
+  // Board context
+  const { boards, selectedBoard } = useContext(BoardContext);
+
+  // Theme context
   const context = useContext(ThemeContext);
   // Check if the context is undefinded.
   if (!context) {
@@ -32,7 +37,8 @@ const Content = () => {
     setIsEditBoardModalOpen(false);
   };
 
-  const platformLuanch = boardsData[0];
+  // Get the current board
+  const currentBoard = boards.find((board) => board.name === selectedBoard);
 
   const randomColorbyIndex = (index: number) => {
     const colors = [
@@ -52,12 +58,9 @@ const Content = () => {
     <>
       {/* IF HAVE VALUES */}
 
-      <div className="flex flex-row gap-6 bg-blue-lighter dark:bg-gray-darker p-6">
-        {platformLuanch.columns.map((column, index) => (
-          <div
-            className="flex flex-col gap-6 w-[280px]"
-            key={index}
-          >
+      <div className="flex flex-row gap-6 h-full bg-blue-lighter dark:bg-gray-darker p-6">
+        {currentBoard?.columns.map((column, index) => (
+          <div className="flex flex-col gap-6 w-[280px]" key={index}>
             {/* Column name */}
             <div className="relative flex items-center">
               <div
@@ -76,7 +79,9 @@ const Content = () => {
                 className="flex flex-col gap-2 min-h-[88px] bg-white dark:bg-gray-dark shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5"
                 key={index}
               >
-                <h3 className="text-hm font-bold dark:text-white">{task.title}</h3>
+                <h3 className="text-hm font-bold dark:text-white">
+                  {task.title}
+                </h3>
                 <p className="text-bm text-gray-light font-bold">
                   {
                     task.subtasks.filter((subtask) => subtask.isCompleted)
@@ -88,44 +93,55 @@ const Content = () => {
             ))}
           </div>
         ))}
-      </div>
 
-      <div className="relative max-w-[1140px] h-[calc(100vh-96px)] bg-blue-lighter dark:bg-gray-darker flex items-center justify-center">
-        {/* IF NO ANY COLUMNS */}
-        <div className="flex flex-col items-center justify-center gap-6">
-          <h2 className="text-hl font-bold text-gray-light">
-            This board is empty. Create a new column to get started.
-          </h2>
-          <Button
-            radius="full"
-            onClick={handleEditBoardModalOpen}
-            className="bg-purple-dark hover:bg-purple-light h-12 w-[164px] text-hm font-bold text-white"
-          >
-            +Add New Column
-          </Button>
-        </div>
-
-        {/* Open edit board modal */}
-        {isEditBoardModalOpen && (
-          <EditBoardModal closeEditBoardModal={handleEditBoardModalClose} />
-        )}
-
-        {/* Absolute position for the  */}
-        {hideSidebar && (
-          <div
-            className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
-            onClick={toggleHideSidebar}
-          >
-            <Image
-              src="./assets/icon-show-sidebar.svg"
-              alt="show-sidebar-icon"
-              width={16}
-              height={16}
-              className="w-[16px] h-auto object-contain"
-            />
+        {/* + New column */}
+        <div className="flex flex-col gap-6 w-[280px] mt-[38px]">
+          <div className="flex flex-col items-center justify-center gap-2 min-h-[814px] bg-blue-lightest dark:bg-gradient-to-r from-gray-darker to-gray-dark dark:bg-opacity-25 shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5">
+            <h1 className="text-hxl font-bold  text-center text-gray-light">
+              + New Column
+            </h1>
           </div>
-        )}
+        </div>
       </div>
+
+      {/* IF NO ANY COLUMNS */}
+      {currentBoard?.columns.length === 0 && (
+        <div className="relative max-w-[1140px] h-[calc(100vh-96px)] bg-blue-lighter dark:bg-gray-darker flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-6">
+            <h2 className="text-hl font-bold text-gray-light">
+              This board is empty. Create a new column to get started.
+            </h2>
+            <Button
+              radius="full"
+              onClick={handleEditBoardModalOpen}
+              className="bg-purple-dark hover:bg-purple-light h-12 w-[164px] text-hm font-bold text-white"
+            >
+              +Add New Column
+            </Button>
+          </div>
+
+          {/* Open edit board modal */}
+          {isEditBoardModalOpen && (
+            <EditBoardModal closeEditBoardModal={handleEditBoardModalClose} />
+          )}
+
+          {/* Absolute position for the  */}
+          {hideSidebar && (
+            <div
+              className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
+              onClick={toggleHideSidebar}
+            >
+              <Image
+                src="./assets/icon-show-sidebar.svg"
+                alt="show-sidebar-icon"
+                width={16}
+                height={16}
+                className="w-[16px] h-auto object-contain"
+              />
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 };

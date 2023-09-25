@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { BoardProvider } from "@/context/BoardContext";
 
 const inter = Inter({ subsets: ["latin"] });
 const PlusJakartaSans = Inter({ subsets: ["latin"] });
@@ -19,7 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ThemeProvider>
-        <body className={PlusJakartaSans.className}>{children}</body>
+        <body className={PlusJakartaSans.className}>
+          <BoardProvider>{children}</BoardProvider>
+        </body>
       </ThemeProvider>
     </html>
   );

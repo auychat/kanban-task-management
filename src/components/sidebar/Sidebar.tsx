@@ -6,9 +6,12 @@ import { boardsData } from "@/app/pages/api/data.js";
 import DarkModeToggle from "./DarkModeToggle";
 import { ThemeContext } from "@/context/ThemeContext";
 import AddBoardModal from "../modal/AddBoardModal";
+import { BoardContext } from "@/context/BoardContext";
 
 const Sidebar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { boards, selectedBoard, setSelectedBoard } = useContext(BoardContext);
 
   const context = useContext(ThemeContext);
   // Check if the context is undefinded.
@@ -20,18 +23,16 @@ const Sidebar = () => {
     mode,
     hideSidebar,
     toggleHideSidebar,
-    selectedBoard,
-    setSelectedBoard,
   } = context;
 
   const logoSrc =
     mode === "light" ? "/assets/logo-dark.svg" : "/assets/logo-light.svg";
 
   useEffect(() => {
-    if (selectedBoard === null) {
-      setSelectedBoard(boardsData[0].name);
+    if (selectedBoard === null && boards.length > 0) {
+      setSelectedBoard(boards[0].name);
     }
-  }, [selectedBoard, setSelectedBoard]);
+  }, [selectedBoard, setSelectedBoard, boards]);
 
   // Handle the modal open
   const handleModalOpen = () => {
@@ -65,7 +66,7 @@ const Sidebar = () => {
                 ALL BOARDS (3)
               </h5>
 
-              {boardsData.map((item, index) => (
+              {boards.map((item, index) => (
                 <div
                   className="flex flex-row gap-4 items-center cursor-pointer group"
                   key={index}
