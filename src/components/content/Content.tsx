@@ -6,14 +6,32 @@ import { ThemeContext } from "@/context/ThemeContext";
 import Image from "next/image";
 import EditBoardModal from "../modal/EditBoardModal";
 import { BoardContext } from "@/context/BoardContext";
+import TaskDetailModal from "../modal/TaskDetailModal";
 
 interface IColumn {
   name: string;
   columns: string[];
 }
 
+interface ISubtask {
+  title: string;
+  isCompleted: boolean;
+}
+
+interface ITask {
+  title: string;
+  description: string;
+  status: string;
+  subtasks: ISubtask[];
+}
+
 const Content = () => {
   const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
+  const [isTaskDetailModalOpen, setTaskDetailModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<{
+    task: ITask;
+    index: number;
+  } | null>(null);
 
   // Board context
   const { boards, selectedBoard } = useContext(BoardContext);
@@ -35,6 +53,17 @@ const Content = () => {
   // Handle the edit board modal close
   const handleEditBoardModalClose = () => {
     setIsEditBoardModalOpen(false);
+  };
+
+  // Handle task detail modal open
+  const handleTaskDetailModalOpen = (task: ITask, index: number) => {
+    setSelectedTask({ task, index })  ;
+    setTaskDetailModalOpen(true);
+  };
+
+  // Handle task detail modal close
+  const handleTaskDetailModalClose = () => {
+    setTaskDetailModalOpen(false);
   };
 
   // Get the current board
@@ -74,10 +103,15 @@ const Content = () => {
                 {")"}
               </h5>
             </div>
+
+            {/* Column tasks */}
             {column.tasks.map((task, index) => (
+              // Task item
               <div
-                className="flex flex-col gap-2 min-h-[88px] bg-white dark:bg-gray-dark shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5"
+                className="flex flex-col gap-2 min-h-[88px] bg-white dark:bg-gray-dark shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5 cursor-pointer"
                 key={index}
+                // onClick={() => console.log(task, index)}
+                onClick={() => handleTaskDetailModalOpen(task, index)}
               >
                 <h3 className="text-hm font-bold dark:text-white">
                   {task.title}
@@ -93,6 +127,13 @@ const Content = () => {
             ))}
           </div>
         ))}
+        {/* Open TaskDetailModal */}
+        {isTaskDetailModalOpen && (
+          <TaskDetailModal
+            closeTaskDetailModal={handleTaskDetailModalClose}
+            selectedTask={selectedTask}
+          />
+        )}
 
         {/* + New column */}
         <div className="flex flex-col gap-6 w-[280px] mt-[38px]">

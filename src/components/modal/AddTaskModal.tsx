@@ -64,7 +64,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
     }
   };
 
-  console.log("selectedBoard", selectedBoard);
+  // console.log("selectedBoard", selectedBoard);
   // Only selected board's columns
   const selectedBoardColumns = boards.find(
     (board) => board.name === selectedBoard
