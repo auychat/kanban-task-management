@@ -132,6 +132,7 @@ const Content = () => {
           <TaskDetailModal
             closeTaskDetailModal={handleTaskDetailModalClose}
             selectedTask={selectedTask}
+            setSelectedTask={setSelectedTask}
           />
         )}
 

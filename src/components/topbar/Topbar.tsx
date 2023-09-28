@@ -6,9 +6,12 @@ import { ThemeContext } from "@/context/ThemeContext";
 import Image from "next/image";
 import AddTaskModal from "../modal/AddTaskModal";
 import { BoardContext } from "@/context/BoardContext";
+import DeleteBoardModal from "../modal/DeleteBoardModal";
 
 const Topbar = () => {
   const [isTaskModalOpen, setTaskModalOpen] = useState(false);
+  const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
+  const [isDeleteBoardModalOpen, setIsDeleteBoardModalOpen] = useState(false);
 
   const { boards, selectedBoard } = useContext(BoardContext);
 
@@ -30,6 +33,21 @@ const Topbar = () => {
   // Handle the modal close
   const handleTaskModalClose = () => {
     setTaskModalOpen(false);
+  };
+
+  // Handle List Icon Click
+  const handleListIconClick = () => {
+    setIsEditBoardModalOpen(!isEditBoardModalOpen);
+  };
+
+  // Handle the delete board confirmation modal open
+  const handleDeleteBoardModalOpen = () => {
+    setIsDeleteBoardModalOpen(true);
+  };
+
+  // Handle the delete board confirmation modal close
+  const handleDeleteBoardModalClose = () => {
+    setIsDeleteBoardModalOpen(false);
   };
 
   return (
@@ -67,7 +85,10 @@ const Topbar = () => {
         </Button>
 
         {/* List Icon */}
-        <div className="flex items-center">
+        <div
+          className="flex items-center cursor-pointer pl-4 relative"
+          onClick={handleListIconClick}
+        >
           <svg width="5" height="20" xmlns="http://www.w3.org/2000/svg">
             <g fill="#828FA3" fillRule="evenodd">
               <circle cx="2.308" cy="2.308" r="2.308" />
@@ -76,6 +97,28 @@ const Topbar = () => {
             </g>
           </svg>
         </div>
+
+        {/* Open Edit Delete Board Modal */}
+        {isEditBoardModalOpen && (
+          <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white shadow-md rounded-md top-[80px] right-[-61px]">
+            <p className="text-bl text-gray-light font-medium hover:font-bold cursor-pointer">
+              Edit Board
+            </p>
+            <p
+              className="text-bl text-red font-medium hover:font-bold cursor-pointer"
+              onClick={handleDeleteBoardModalOpen}
+            >
+              Delete Board
+            </p>
+          </div>
+        )}
+
+        {/* Open Delete Board Modal Confirmation */}
+        {isDeleteBoardModalOpen && (
+          <DeleteBoardModal
+            closeDeleteBoardModal={handleDeleteBoardModalClose}
+          />
+        )}
       </div>
 
       {/* Open task modal */}
