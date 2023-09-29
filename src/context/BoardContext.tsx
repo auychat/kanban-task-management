@@ -2,48 +2,30 @@
 
 import React, { useState, createContext } from "react";
 import { boardsData } from "@/app/pages/api/data";
-
-interface ISubtask {
-  title: string;
-  isCompleted: boolean;
-}
-
-interface ITask {
-  title: string;
-  description: string;
-  status: string;
-  subtasks: ISubtask[];
-}
-
-interface IColumn {
-  name: string;
-  tasks: ITask[];
-}
-
-interface IBoard {
-  name: string;
-  columns: IColumn[];
-}
-
-interface IBoardContextValue {
-  boards: IBoard[];
-  selectedBoard: string | null;
-  setSelectedBoard: (boardName: string | null) => void;
-  addBoard: (board: IBoard) => void;
-  updateBoard: (boardIndex: number, updateBoard: IBoard) => void;
-  deleteBoard: (boardIndex: number) => void;
-  addTask: (task: ITask) => void;
-}
+import {
+  ISubtask,
+  ITask,
+  IColumn,
+  IBoard,
+  IBoardContextValue,
+} from "./BoardInterface";
+import { set } from "react-hook-form";
 
 // Create a new context for managing the boards data
 export const BoardContext = createContext<IBoardContextValue>({
   boards: [],
   selectedBoard: null,
   setSelectedBoard: () => {},
+  selectedColumn: null,
+  setSelectedColumn: () => {},
   addBoard: () => {},
   updateBoard: () => {},
   deleteBoard: () => {},
   addTask: () => {},
+  selectedTask: null,
+  setSelectedTask: () => {},
+  updateTask: () => {},
+  deleteTask: () => {},
 });
 
 // Define a provider component that wraps the children with the context provider
@@ -54,25 +36,34 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   const [boards, setBoards] = useState<IBoard[]>(boardsData);
 
   const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
+  const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
+  const [selectedTask, setSelectedTask] = useState<{
+    task: ITask;
+    index: number;
+  } | null>(null);
 
-  // // Define the functions for CRUD operations that will be passed down to the context value
+  // Define the functions for CRUD operations that will be passed down to the context value
+
+  // Add a new board to the boards array
   const addBoard = (board: IBoard) => {
     setBoards([...boards, board]);
   };
 
+  // Update and existing board in the boards array
   const updateBoard = (boardIndex: number, updateBoard: IBoard) => {
     const updatedBoards = [...boards];
     updatedBoards[boardIndex] = updateBoard;
     setBoards(updatedBoards);
   };
 
+  // Delete a board from the boards array
   const deleteBoard = (boardIndex: number) => {
     const updatedBoards = [...boards];
     updatedBoards.splice(boardIndex, 1);
     setBoards(updatedBoards);
   };
 
-  // Add a new task to the selected board
+  // Add a new task to the selected board and update columns accordingly
   const addTask = (task: ITask) => {
     // Copy the boards array
     const updatedBoards = [...boards];
@@ -103,14 +94,74 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     setBoards(updatedBoards);
   };
 
+  // Update the selected task within the boards array
+  const updateTask = (prevTask: ITask, task: ITask) => {
+    console.log("Update Task Function from BoardContext.tsx");
+
+    if (!selectedTask || !selectedTask.task.subtasks) return;
+
+    const updatedBoards = boards.map((board) => {
+      if (board.name !== selectedBoard) return board;
+
+      const oldColumnIndex = board.columns.findIndex(
+        (column) => column.name === prevTask.status
+      );
+
+      const newColumnIndex = board.columns.findIndex(
+        (column) => column.name === task.status
+      );
+
+      if (oldColumnIndex === -1 || newColumnIndex === -1) return board;
+
+      const updatedColumns = [...board.columns];
+      const oldColumn = updatedColumns[oldColumnIndex];
+      const newColumn = updatedColumns[newColumnIndex];
+
+      const updatedTasks = oldColumn.tasks.filter(
+        (t) => t.title !== prevTask.title || t.status !== prevTask.status
+      );
+
+      oldColumn.tasks = updatedTasks;
+      newColumn.tasks.push(task);
+
+      return {
+        ...board,
+        columns: updatedColumns,
+      };
+    });
+
+    setBoards(updatedBoards);
+  };
+
+  // Delete the selected task
+  const deleteTask = (task: ITask) => {
+    console.log("Delete Task Function from BoardContext.tsx");
+
+    setBoards((prevBoards) =>
+      prevBoards.map((board) => ({
+        ...board,
+        columns: board.columns.map((column) => ({
+          ...column,
+          tasks: column.tasks.filter((t) => t.title !== task.title),
+        })),
+      }))
+    );
+  };
+
   const contextValue: IBoardContextValue = {
     boards,
     selectedBoard,
     setSelectedBoard,
+    selectedColumn,
+    setSelectedColumn,
     addBoard,
     updateBoard,
     deleteBoard,
     addTask,
+    selectedTask,
+    setSelectedTask,
+    updateTask,
+    deleteTask,
   };
 
   return (

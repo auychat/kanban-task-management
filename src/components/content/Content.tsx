@@ -1,40 +1,26 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Button } from "@nextui-org/button";
 import { ThemeContext } from "@/context/ThemeContext";
 import Image from "next/image";
 import EditBoardModal from "../modal/EditBoardModal";
 import { BoardContext } from "@/context/BoardContext";
 import TaskDetailModal from "../modal/TaskDetailModal";
-
-interface IColumn {
-  name: string;
-  columns: string[];
-}
-
-interface ISubtask {
-  title: string;
-  isCompleted: boolean;
-}
-
-interface ITask {
-  title: string;
-  description: string;
-  status: string;
-  subtasks: ISubtask[];
-}
+import { IColumn, ISubtask, ITask, IBoard } from "@/context/BoardInterface";
 
 const Content = () => {
   const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
   const [isTaskDetailModalOpen, setTaskDetailModalOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<{
-    task: ITask;
-    index: number;
-  } | null>(null);
 
   // Board context
-  const { boards, selectedBoard } = useContext(BoardContext);
+  const {
+    boards,
+    selectedBoard,
+    setSelectedColumn,
+    selectedTask,
+    setSelectedTask,
+  } = useContext(BoardContext);
 
   // Theme context
   const context = useContext(ThemeContext);
@@ -55,9 +41,15 @@ const Content = () => {
     setIsEditBoardModalOpen(false);
   };
 
-  // Handle task detail modal open
+  // Handle task detail modal open and set the selected task and column
   const handleTaskDetailModalOpen = (task: ITask, index: number) => {
-    setSelectedTask({ task, index })  ;
+    setSelectedTask({ task, index });
+
+    setSelectedColumn(
+      boards
+        .find((board) => board.name === selectedBoard)
+        ?.columns.find((column) => column.tasks.includes(task))?.name ?? null
+    );
     setTaskDetailModalOpen(true);
   };
 
@@ -67,7 +59,15 @@ const Content = () => {
   };
 
   // Get the current board
-  const currentBoard = boards.find((board) => board.name === selectedBoard);
+  const [currentBoard, setCurrentBoard] = useState<IBoard>();
+
+  useEffect(() => {
+    const board = boards.find((board) => board.name === selectedBoard);
+    setCurrentBoard(board);
+  }, [boards, selectedBoard, selectedTask]);
+  // console.log("currentBoard", currentBoard);
+
+  // const currentBoard = boards.find((board) => board.name === selectedBoard);
 
   const randomColorbyIndex = (index: number) => {
     const colors = [
@@ -129,11 +129,7 @@ const Content = () => {
         ))}
         {/* Open TaskDetailModal */}
         {isTaskDetailModalOpen && (
-          <TaskDetailModal
-            closeTaskDetailModal={handleTaskDetailModalClose}
-            selectedTask={selectedTask}
-            setSelectedTask={setSelectedTask}
-          />
+          <TaskDetailModal closeTaskDetailModal={handleTaskDetailModalClose} />
         )}
 
         {/* + New column */}

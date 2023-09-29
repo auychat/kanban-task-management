@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { BoardProvider } from "@/context/BoardContext";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 const PlusJakartaSans = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

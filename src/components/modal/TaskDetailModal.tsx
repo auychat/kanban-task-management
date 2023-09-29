@@ -7,47 +7,45 @@ import React, {
 } from "react";
 import { BoardContext } from "@/context/BoardContext";
 import DeleteTaskModal from "./DeleteTaskModal";
+import EditTaskModal from "./EditTaskModal";
 
 interface TaskDetailModalProps {
   closeTaskDetailModal: () => void;
-  selectedTask: {
-    task: ITask;
-    index: number;
-  } | null;
-  setSelectedTask: (
-    task: {
-      task: ITask;
-      index: number;
-    } | null
-  ) => void;
 }
 
-interface ISubtask {
+export interface ISubtask {
   title: string;
   isCompleted: boolean;
 }
 
-interface ITask {
+export interface ITask {
   title: string;
   description: string;
   status: string;
   subtasks: ISubtask[];
 }
 
-const TaskDetailModal = ({
-  closeTaskDetailModal,
-  selectedTask,
-  setSelectedTask,
-}: TaskDetailModalProps) => {
-  const { boards, selectedBoard } = useContext(BoardContext);
+const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
+  const {
+    boards,
+    selectedBoard,
+    selectedColumn,
+    selectedTask,
+    updateTask,
+    deleteTask,
+    setSelectedTask,
+  } = useContext(BoardContext);
   const [selectedStatus, setSelectedStatus] = useState(
     selectedTask?.task.status
   );
+  const [isEditDeleteTaskModalOpen, setIsEditDeleteTaskModalOpen] =
+    useState(false);
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
   const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedStatus(e.target.value);
+    const newStatus = e.target.value;
+    setSelectedStatus(newStatus);
   };
 
   const selectedBoardColumns = boards.find(
@@ -82,8 +80,19 @@ const TaskDetailModal = ({
 
   // Handle List Icon Click
   const handleListIconClick = () => {
-    setIsEditTaskModalOpen(!isEditTaskModalOpen);
+    setIsEditDeleteTaskModalOpen(!isEditDeleteTaskModalOpen);
   };
+
+  const initialSelectedTaskRef = useRef(selectedTask);
+
+  useEffect(() => {
+    const prevSelectedTask = initialSelectedTaskRef.current;
+
+    if (selectedTask !== prevSelectedTask) {
+      updateTask(prevSelectedTask?.task as ITask, selectedTask?.task as ITask);
+      initialSelectedTaskRef.current = selectedTask;
+    }
+  }, [selectedTask, updateTask]);
 
   // Handle Subtask Checkbox Click
   const handleSubtaskClick = (index: number) => {
@@ -101,6 +110,45 @@ const TaskDetailModal = ({
         subtasks: updatedSubtasks,
       },
     });
+
+    const totalSubtasks = selectedTask?.task.subtasks.length;
+    const completedSubtasks = selectedTask?.task.subtasks.filter(
+      (subtask) => subtask.isCompleted
+    ).length;
+    const boardColumns =
+      boards
+        .find((board) => board.name === selectedBoard)
+        ?.columns.map((column) => column.name) ?? [];
+
+    if (completedSubtasks === totalSubtasks) {
+      setSelectedTask({
+        ...selectedTask,
+        task: { ...selectedTask.task, status: boardColumns[2] },
+      });
+    } else if (completedSubtasks === 0) {
+      setSelectedTask({
+        ...selectedTask,
+        task: { ...selectedTask.task, status: boardColumns[0] },
+      });
+    } else {
+      setSelectedTask({
+        ...selectedTask,
+        task: { ...selectedTask.task, status: boardColumns[1] },
+      });
+    }
+
+    // updateTask(selectedTask!.task);
+    // console.log("selectedTaskNormal", selectedTask.task.status)
+  };
+
+  // Handle Edit Task Modal Open
+  const handleEditTaskModalOpen = () => {
+    setIsEditTaskModalOpen(true);
+  };
+
+  // Handle Edit Task Modal Close
+  const handleEditTaskModalClose = () => {
+    setIsEditTaskModalOpen(false);
   };
 
   // Handle Delete Task Modal Open
@@ -119,11 +167,12 @@ const TaskDetailModal = ({
     if (!selectedTask || !selectedBoardColumns) {
       return;
     }
-
-    const updatedTasks = [selectedTask.index];
-    console.log("updatedTasks", updatedTasks);
-    console.log("selectedTasks", selectedTask);
+    deleteTask(selectedTask.task);
+    closeTaskDetailModal();
   };
+  // console.log("selectedBoard", selectedBoard);
+  // console.log("selectedColumn", selectedColumn);
+  // console.log("selectedTasks", selectedTask);
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex justify-center items-center">
@@ -153,10 +202,11 @@ const TaskDetailModal = ({
           </div>
 
           {/* Open Edit Delete Task Modal */}
-          {isEditTaskModalOpen && (
+          {isEditDeleteTaskModalOpen && (
             <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white shadow-md rounded-md top-[80px] right-[-61px]">
               <p
                 className="text-bl text-gray-light font-medium hover:font-bold cursor-pointer"
+                onClick={handleEditTaskModalOpen}
               >
                 Edit Task
               </p>
@@ -169,11 +219,16 @@ const TaskDetailModal = ({
             </div>
           )}
 
+          {/* Open Edit Task Modal */}
+          {isEditTaskModalOpen && (
+            <EditTaskModal closeEditTaskModal={handleEditTaskModalClose} />
+          )}
+
           {/* Open Delete Task Modal Confirmation */}
           {isDeleteTaskModalOpen && (
             <DeleteTaskModal
               closeDeleteTaskModal={handleDeleteTaskModalClose}
-              confirmDelteTask={handleDeleteTask}
+              confirmDeleteTask={handleDeleteTask}
             />
           )}
         </div>
@@ -256,8 +311,8 @@ const TaskDetailModal = ({
         <div className="relative flex flex-col gap-2">
           <p className="text-bm text-gray-light font-bold">Current Status</p>
           <select
-            value={selectedStatus}
-            onChange={handleStatusChange}
+            value={selectedTask?.task.status}
+            // onChange={handleStatusChange}
             className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full dark:bg-gray-darker focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
           >
             {selectedBoardColumns?.map((column, index) => (
