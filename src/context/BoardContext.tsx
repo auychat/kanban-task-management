@@ -62,13 +62,21 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Delete a board from the boards array
   const deleteBoard = (boardName: string) => {
-    console.log("Delete Board Function from BoardContext.tsx", boards);
-
     const boardIndex = boards.findIndex((board) => board.name === boardName);
     if (boardIndex !== -1) {
       const updatedBoards = [...boards];
       updatedBoards.splice(boardIndex, 1);
       setBoards(updatedBoards);
+
+      // Check if there are remaining boards
+      if (updatedBoards.length > 0) {
+        // If there are remaining boards, set the selected board to the next one
+        const nextBoardIndex = boardIndex === 0 ? 0 : boardIndex - 1;
+        setSelectedBoard(updatedBoards[nextBoardIndex].name);
+      } else {
+        // If there are no remaining boards, set the selected board to null
+        setSelectedBoard(null);
+      }
     }
   };
 

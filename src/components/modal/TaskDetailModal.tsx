@@ -159,6 +159,7 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
   // Handle Delete Task Modal Close
   const handleDeleteTaskModalClose = () => {
     setIsDeleteTaskModalOpen(false);
+    closeTaskDetailModal();
   };
 
   // Handle Delete Task

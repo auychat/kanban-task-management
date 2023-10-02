@@ -2,14 +2,13 @@
 
 import Image from "next/image";
 import React, { useContext, useEffect, useState } from "react";
-import { boardsData } from "@/app/pages/api/data.js";
 import DarkModeToggle from "./DarkModeToggle";
 import { ThemeContext } from "@/context/ThemeContext";
 import AddBoardModal from "../modal/AddBoardModal";
 import { BoardContext } from "@/context/BoardContext";
 
 const Sidebar = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNewBoardModalOpen, setIsNewBoardModalOpen] = useState(false);
 
   const { boards, selectedBoard, setSelectedBoard } = useContext(BoardContext);
 
@@ -34,20 +33,20 @@ const Sidebar = () => {
     }
   }, [selectedBoard, setSelectedBoard, boards]);
 
-  // Handle the modal open
+  // Handle the New Board modal open
   const handleModalOpen = () => {
-    setIsModalOpen(true);
+    setIsNewBoardModalOpen(true);
   };
 
-  // Handle the modal close
+  // Handle the New Board modal close
   const handleModalClose = () => {
-    setIsModalOpen(false);
+    setIsNewBoardModalOpen(false);
   };
 
   return (
     <>
       {!hideSidebar && (
-        <div className="bg-white dark:bg-gray-dark min-w-[300px] w-[300px] h-screen flex flex-col justify-between border-1 border-blue-lightest dark:border-gray-medium">
+        <div className="bg-white dark:bg-gray-dark min-w-[300px] w-[300px] min-h-full flex flex-col justify-between border-1 border-blue-lightest dark:border-gray-medium">
           <div className="flex flex-col gap-8">
             {/* Logo Section */}
             <div className="flex p-8">
@@ -63,7 +62,7 @@ const Sidebar = () => {
             {/* Menu Section */}
             <div className="flex flex-col gap-7 p-8 relative">
               <h5 className="text-hs text-gray-light font-bold">
-                ALL BOARDS (3)
+                ALL BOARDS ({boards.length})
               </h5>
 
               {boards.map((item, index) => (
@@ -114,8 +113,8 @@ const Sidebar = () => {
                   + Create New Board
                 </h4>
               </div>
-              {/* Open Modal */}
-              {isModalOpen && <AddBoardModal closeModal={handleModalClose} />}
+              {/* Open New Board Modal */}
+              {isNewBoardModalOpen && <AddBoardModal closeModal={handleModalClose} />}
             </div>
           </div>
           {/* Bottom Section */}

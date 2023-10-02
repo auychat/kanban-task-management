@@ -8,15 +8,16 @@ import AddTaskModal from "../modal/AddTaskModal";
 import { BoardContext } from "@/context/BoardContext";
 import EditBoardModal from "../modal/EditBoardModal";
 import DeleteBoardModal from "../modal/DeleteBoardModal";
-import { set } from "react-hook-form";
 
 const Topbar = () => {
   const [isTaskModalOpen, setTaskModalOpen] = useState(false);
-  const [isEditDeleteBoardModalOpen, setIsEditDeleteBoardModalOpen] = useState(false);
+  const [isEditDeleteBoardModalOpen, setIsEditDeleteBoardModalOpen] =
+    useState(false);
   const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
   const [isDeleteBoardModalOpen, setIsDeleteBoardModalOpen] = useState(false);
 
-  const { boards, selectedBoard, setSelectedBoard, deleteBoard } = useContext(BoardContext);
+  const { boards, selectedBoard, setSelectedBoard, deleteBoard } =
+    useContext(BoardContext);
 
   const context = useContext(ThemeContext);
   // Check if the context is undefinded.
@@ -71,12 +72,11 @@ const Topbar = () => {
       deleteBoard(selectedBoard);
       handleDeleteBoardModalClose();
       handleListIconClick();
-      (setSelectedBoard(boards[0].name));
     }
   };
 
   return (
-    <div className="relative max-h-[96px] max-w-[1140px] h-full w-screen border-1 border-l-0 border-blue-lightest dark:border-gray-medium bg-white dark:bg-gray-dark flex flex-row justify-between items-center p-6">
+    <div className="relative max-h-[96px] max-w-[1240px] h-full w-screen border-1 border-l-0 border-blue-lightest dark:border-gray-medium bg-white dark:bg-gray-dark flex flex-row justify-between items-center p-6">
       <div className="flex flex-row gap-8 items-center">
         {/* Logo Section */}
         <>
@@ -101,10 +101,16 @@ const Topbar = () => {
           className={`bg-purple-dark h-12 w-[164px] text-hm font-bold text-white ${
             boards.find((board) => board.name === selectedBoard)?.columns
               .length === 0
-              ? "opacity-25"
+              ? "opacity-25 cursor-default"
               : "opacity-100"
           } `}
-          onClick={handleTaskModalOpen}
+          // onClick={handleTaskModalOpen}
+          onClick={
+            boards.find((board) => board.name === selectedBoard)?.columns
+              .length === 0
+              ? undefined
+              : handleTaskModalOpen
+          }
         >
           +Add New Task
         </Button>
@@ -125,7 +131,7 @@ const Topbar = () => {
 
         {/* Open Edit Delete Board Modal */}
         {isEditDeleteBoardModalOpen && (
-          <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white shadow-md rounded-md top-[80px] right-[-61px]">
+          <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white shadow-md rounded-md top-[80px] right-[-61px] z-50">
             <button
               type="button"
               onClick={handleEditBoardModalOpen}
@@ -145,13 +151,17 @@ const Topbar = () => {
 
         {/* Open Edit Board Modal */}
         {isEditBoardModalOpen && (
-          <EditBoardModal closeEditBoardModal={handleEditBoardModalClose} closeEditDeleteBoardModal={handleListIconClick} />
+          <EditBoardModal
+            closeEditBoardModal={handleEditBoardModalClose}
+            closeEditDeleteBoardModal={handleListIconClick}
+          />
         )}
 
         {/* Open Delete Board Modal Confirmation */}
         {isDeleteBoardModalOpen && (
           <DeleteBoardModal
-            closeDeleteBoardModal={handleDeleteBoardModalClose} confirmDeleteBoard={handleDeleteBoard}
+            closeDeleteBoardModal={handleDeleteBoardModalClose}
+            confirmDeleteBoard={handleDeleteBoard}
           />
         )}
       </div>
