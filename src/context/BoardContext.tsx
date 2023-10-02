@@ -22,9 +22,10 @@ export const BoardContext = createContext<IBoardContextValue>({
   updateBoard: () => {},
   deleteBoard: () => {},
   addTask: () => {},
+  updateTask: () => {},
   selectedTask: null,
   setSelectedTask: () => {},
-  updateTask: () => {},
+  updateTaskStatus: () => {},
   deleteTask: () => {},
 });
 
@@ -95,9 +96,38 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // Update the selected task within the boards array
-  const updateTask = (prevTask: ITask, task: ITask) => {
-    console.log("Update Task Function from BoardContext.tsx");
+  const updateTask = (task: ITask) => {
+    const updatedBoards = boards.map((board) => {
+      if (board.name !== selectedBoard) return board;
 
+      const columnIndex = board.columns.findIndex(
+        (column) => column.name === task.status
+      );
+
+      if (columnIndex === -1) return board;
+
+      const updatedColumns = [...board.columns];
+      const column = updatedColumns[columnIndex];
+
+      const taskIndex = column.tasks.findIndex(
+        (t) => t.title === task.title && t.status === task.status
+      );
+
+      if (taskIndex === -1) return board;
+
+      column.tasks[taskIndex] = task;
+
+      return {
+        ...board,
+        columns: updatedColumns,
+      };
+    });
+
+    setBoards(updatedBoards);
+  };
+
+  // Update the selected task within the boards array
+  const updateTaskStatus = (prevTask: ITask, task: ITask) => {
     if (!selectedTask || !selectedTask.task.subtasks) return;
 
     const updatedBoards = boards.map((board) => {
@@ -158,9 +188,10 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     updateBoard,
     deleteBoard,
     addTask,
+    updateTask,
     selectedTask,
     setSelectedTask,
-    updateTask,
+    updateTaskStatus,
     deleteTask,
   };
 

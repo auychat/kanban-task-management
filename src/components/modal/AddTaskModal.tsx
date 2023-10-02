@@ -3,21 +3,10 @@ import { Button } from "@nextui-org/button";
 import Image from "next/image";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { BoardContext } from "@/context/BoardContext";
+import { ISubtask, ITask } from "@/context/BoardInterface";
 
 interface AddTaskModalProps {
   closeTaskModal: () => void;
-}
-
-interface ISubtask {
-  title: string;
-  isCompleted: boolean;
-}
-
-interface ITaskFormInput {
-  title: string;
-  description: string;
-  status: string;
-  subtasks: ISubtask[];
 }
 
 const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
@@ -30,7 +19,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
     watch,
     formState: { errors },
     setValue,
-  } = useForm<ITaskFormInput>({
+  } = useForm<ITask>({
     defaultValues: {
       subtasks: [
         { title: "", isCompleted: false },
@@ -47,7 +36,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
   // console.log(watch("subtasks"));
 
   // Handle form submit
-  const onSubmit: SubmitHandler<ITaskFormInput> = (data) => {
+  const onSubmit: SubmitHandler<ITask> = (data) => {
     addTask(data);
     closeTaskModal();
   };
@@ -72,10 +61,10 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white dark:bg-gray-darker w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-4 relative">
+      <div className="bg-white dark:bg-gray-dark w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-4 relative">
         {/* Close Modal Button */}
         <div className="absolute right-0 top-0 p-4">
-          <button onClick={closeTaskModal}>
+          <button type="button" onClick={closeTaskModal}>
             <Image
               src="./assets/icon-cross.svg"
               alt="cross-icon"
@@ -101,7 +90,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
               autoComplete="off"
               placeholder="e.g. Take a break"
               {...register("title", { required: true })}
-              className={`text-bl text-black dark:text-white placeholder-opacity-25 font-medium p-4 border border-gray-light border-opacity-25 rounded-[4px] h-[40px] dark:bg-gray-darker focus:border-purple-dark focus:outline-none ${
+              className={`text-bl text-black dark:text-white placeholder-opacity-25 font-medium p-4 border border-gray-light border-opacity-25 rounded-[4px] h-[40px] dark:bg-gray-dark focus:border-purple-dark focus:outline-none ${
                 errors.title
                   ? "border-red border-opacity-100 focus:border-red"
                   : ""
@@ -126,7 +115,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
               id="description"
               {...register("description", { required: false })}
               placeholder="e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little."
-              className="text-bl text-black dark:text-white placeholder-opacity-25 whitespace-pre-wrap font-medium resize-none p-4 border border-gray-light border-opacity-25 rounded-[4px] min-h-[112px] max-w-[416px] w-full dark:bg-gray-darker focus:border-purple-dark focus:outline-none"
+              className="text-bl text-black dark:text-white placeholder-opacity-25 whitespace-pre-wrap font-medium resize-none p-4 border border-gray-light border-opacity-25 rounded-[4px] min-h-[112px] max-w-[416px] w-full dark:bg-gray-dark focus:border-purple-dark focus:outline-none"
             />
           </div>
 
@@ -140,8 +129,8 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
             </label>
 
             {/* Subtask Values */}
-            {fields.map((subtask, index) => (
-              <div key={index} className="flex flex-row gap-4 justify-between">
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex flex-row gap-4 justify-between">
                 <input
                   type="text"
                   id={`subtask-${index}`}
@@ -156,7 +145,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
                   {...register(`subtasks.${index}.title`, {
                     required: index === 0,
                   })}
-                  className={`text-bl text-black dark:text-white placeholder-opacity-25 font-medium p-4 border border-gray-light border-opacity-25 rounded-[4px] h-[40px] w-full dark:bg-gray-darker focus:border-purple-dark focus:outline-none ${
+                  className={`text-bl text-black dark:text-white placeholder-opacity-25 font-medium p-4 border border-gray-light border-opacity-25 rounded-[4px] h-[40px] w-full dark:bg-gray-dark focus:border-purple-dark focus:outline-none ${
                     errors.subtasks && index === 0
                       ? "border-red border-opacity-100 focus:border-red"
                       : ""
@@ -171,6 +160,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
                 {/* Delete Button */}
                 <button
                   id={`delete-subtask-${index}`}
+                  type="button"
                   onClick={() => handleDeleteSubtask(index)}
                 >
                   <svg
@@ -194,6 +184,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
 
             <Button
               radius="full"
+              type="button"
               onClick={() => handleAddNewSubtask()}
               className="bg-purple-dark bg-opacity-10 dark:bg-white dark:text-purple-dark hover:bg-opacity-25 h-10 w-full text-hm font-bold text-purple-dark dark:hover:text-purple-light"
             >
@@ -212,7 +203,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
             <select
               id="priority"
               {...register("status", { required: true })}
-              className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full dark:bg-gray-darker focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
+              className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full dark:bg-gray-dark focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
             >
               {selectedBoardColumns?.map((column, index) => (
                 <option

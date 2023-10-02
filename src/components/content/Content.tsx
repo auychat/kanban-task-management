@@ -56,6 +56,7 @@ const Content = () => {
   // Handle task detail modal close
   const handleTaskDetailModalClose = () => {
     setTaskDetailModalOpen(false);
+    console.log("closeDetailModal Worked");
   };
 
   // Get the current board
@@ -110,7 +111,6 @@ const Content = () => {
               <div
                 className="flex flex-col gap-2 min-h-[88px] bg-white dark:bg-gray-dark shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5 cursor-pointer"
                 key={index}
-                // onClick={() => console.log(task, index)}
                 onClick={() => handleTaskDetailModalOpen(task, index)}
               >
                 <h3 className="text-hm font-bold dark:text-white">

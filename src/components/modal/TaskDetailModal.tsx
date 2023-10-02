@@ -8,21 +8,10 @@ import React, {
 import { BoardContext } from "@/context/BoardContext";
 import DeleteTaskModal from "./DeleteTaskModal";
 import EditTaskModal from "./EditTaskModal";
+import { ISubtask, ITask } from "@/context/BoardInterface";
 
 interface TaskDetailModalProps {
   closeTaskDetailModal: () => void;
-}
-
-export interface ISubtask {
-  title: string;
-  isCompleted: boolean;
-}
-
-export interface ITask {
-  title: string;
-  description: string;
-  status: string;
-  subtasks: ISubtask[];
 }
 
 const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
@@ -31,10 +20,11 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
     selectedBoard,
     selectedColumn,
     selectedTask,
-    updateTask,
+    updateTaskStatus,
     deleteTask,
     setSelectedTask,
   } = useContext(BoardContext);
+
   const [selectedStatus, setSelectedStatus] = useState(
     selectedTask?.task.status
   );
@@ -43,9 +33,8 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
   const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newStatus = e.target.value;
-    setSelectedStatus(newStatus);
+  const handleStatusChange = () => {
+    setSelectedStatus(selectedTask?.task.status);
   };
 
   const selectedBoardColumns = boards.find(
@@ -61,22 +50,31 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
       // Check if modalRef exists and if the click occurred outside the modal
       if (
         modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
+        !modalRef.current.contains(event.target as Node) &&
+        !isEditDeleteTaskModalOpen &&
+        !isEditTaskModalOpen &&
+        !isDeleteTaskModalOpen
       ) {
         // Close the modal if the click is outside
         closeTaskDetailModal();
       }
     },
-    [closeTaskDetailModal]
+    [
+      closeTaskDetailModal,
+      isEditDeleteTaskModalOpen,
+      isEditTaskModalOpen,
+      isDeleteTaskModalOpen,
+    ]
   );
 
   // Add a click event listener when the modal is opened
   useEffect(() => {
     document.addEventListener("click", handleOutsideClick);
+
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
-  }, [handleOutsideClick]);
+  }, [isEditTaskModalOpen, handleOutsideClick]);
 
   // Handle List Icon Click
   const handleListIconClick = () => {
@@ -89,10 +87,13 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
     const prevSelectedTask = initialSelectedTaskRef.current;
 
     if (selectedTask !== prevSelectedTask) {
-      updateTask(prevSelectedTask?.task as ITask, selectedTask?.task as ITask);
+      updateTaskStatus(
+        prevSelectedTask?.task as ITask,
+        selectedTask?.task as ITask
+      );
       initialSelectedTaskRef.current = selectedTask;
     }
-  }, [selectedTask, updateTask]);
+  }, [selectedTask, updateTaskStatus]);
 
   // Handle Subtask Checkbox Click
   const handleSubtaskClick = (index: number) => {
@@ -149,6 +150,9 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
   // Handle Edit Task Modal Close
   const handleEditTaskModalClose = () => {
     setIsEditTaskModalOpen(false);
+    setIsEditDeleteTaskModalOpen(false);
+    closeTaskDetailModal();
+    // console.log("closeEditTaskModal Worked");
   };
 
   // Handle Delete Task Modal Open
@@ -177,7 +181,7 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex justify-center items-center">
       <div
-        className="bg-white dark:bg-gray-darker w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-6 relative"
+        className="bg-white dark:bg-gray-dark w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-6 relative"
         ref={modalRef}
       >
         {/* Task Content */}
@@ -204,24 +208,29 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
           {/* Open Edit Delete Task Modal */}
           {isEditDeleteTaskModalOpen && (
             <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white shadow-md rounded-md top-[80px] right-[-61px]">
-              <p
+              <button
+                type="button"
                 className="text-bl text-gray-light font-medium hover:font-bold cursor-pointer"
                 onClick={handleEditTaskModalOpen}
               >
                 Edit Task
-              </p>
-              <p
+              </button>
+              <button
+                type="button"
                 className="text-bl text-red font-medium hover:font-bold cursor-pointer"
                 onClick={handleDeleteTaskModalOpen}
               >
                 Delete Task
-              </p>
+              </button>
             </div>
           )}
 
           {/* Open Edit Task Modal */}
           {isEditTaskModalOpen && (
-            <EditTaskModal closeEditTaskModal={handleEditTaskModalClose} />
+            <EditTaskModal
+              closeEditTaskModal={handleEditTaskModalClose}
+              closeTaskDetailModal={closeTaskDetailModal}
+            />
           )}
 
           {/* Open Delete Task Modal Confirmation */}
@@ -240,7 +249,7 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
 
         {/* Subtasks */}
         <div className="flex flex-col gap-4">
-          <p className="text-bm text-gray-light font-bold">
+          <p className="text-bm dark:text-white text-gray-light font-bold">
             Subtasks{" ( "}
             {
               selectedTask?.task.subtasks.filter(
@@ -254,7 +263,7 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
             {selectedTask?.task.subtasks.map((subtask, index) => (
               <div
                 key={index}
-                className="flex items-center gap-4 bg-blue-lighter hover:bg-purple-dark hover:bg-opacity-25 px-3 min-h-10 rounded-[4px] cursor-pointer"
+                className="flex items-center gap-4 bg-blue-lighter dark:bg-gray-darker hover:bg-purple-dark hover:bg-opacity-25 px-3 min-h-10 rounded-[4px] cursor-pointer"
                 onClick={() => handleSubtaskClick(index)}
               >
                 {/* Custom Check box */}
@@ -270,7 +279,7 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
                   className="relative cursor-pointer"
                 >
                   <div
-                    className={`w-4 h-4 bg-white border border-none dark:border-gray-darker rounded-[2px] transition-all duration-100 transform ${
+                    className={`w-4 h-4 bg-white dark:bg-gray-dark border-1 border-gray-light border-opacity-25 rounded-[2px] transition-all duration-100 transform ${
                       subtask.isCompleted ? "scale-110" : "scale-100"
                     } hover:scale-110`}
                   ></div>
@@ -296,8 +305,10 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
                 </label>
 
                 <span
-                  className={`text-bm font-bold text-black text-opacity-50 hover:text-opacity-100 py-3 ${
-                    subtask.isCompleted ? "line-through" : ""
+                  className={`text-bm font-bold text-black dark:text-white text-opacity-50 hover:text-opacity-100 py-3 ${
+                    subtask.isCompleted
+                      ? "line-through dark:text-opacity-50"
+                      : ""
                   }`}
                 >
                   {subtask.title}
@@ -309,14 +320,16 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
 
         {/* Task Status */}
         <div className="relative flex flex-col gap-2">
-          <p className="text-bm text-gray-light font-bold">Current Status</p>
+          <p className="text-bm text-gray-light dark:text-white font-bold">
+            Current Status
+          </p>
           <select
             value={selectedTask?.task.status}
-            // onChange={handleStatusChange}
+            onChange={handleStatusChange}
             className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full dark:bg-gray-darker focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
           >
             {selectedBoardColumns?.map((column, index) => (
-              <option value={column.name} key={index} className="text-red p-10">
+              <option value={column.name} key={index} className="text-bl font-medium">
                 {column.name}
               </option>
             ))}

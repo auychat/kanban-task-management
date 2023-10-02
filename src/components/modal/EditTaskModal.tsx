@@ -1,30 +1,27 @@
 import Image from "next/image";
-import React, { useContext } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useCallback,
+  useState,
+} from "react";
 import { Button } from "@nextui-org/button";
 import { BoardContext } from "@/context/BoardContext";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import { ISubtask, ITask } from "@/context/BoardInterface";
 
 interface EditTaskModalProps {
   closeEditTaskModal: () => void;
+  closeTaskDetailModal: () => void;
 }
 
-interface ISubtask {
-  title: string;
-  isCompleted: boolean;
-}
-
-interface ITaskFormInput {
-  title: string;
-  description: string;
-  status: string;
-  subtasks: ISubtask[];
-}
-
-const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
-  const { boards, selectedBoard, selectedTask, setSelectedTask, updateTask, deleteTask } =
+const EditTaskModal = ({
+  closeEditTaskModal,
+  closeTaskDetailModal,
+}: EditTaskModalProps) => {
+  const { boards, selectedBoard, selectedTask, setSelectedTask, deleteTask, updateTask } =
     useContext(BoardContext);
-
-//   console.log("selectedTask", selectedTask);
 
   const {
     register,
@@ -33,7 +30,7 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
     watch,
     formState: { errors },
     setValue,
-  } = useForm<ITaskFormInput>({ defaultValues: selectedTask?.task });
+  } = useForm<ITask>({ defaultValues: selectedTask?.task });
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -43,7 +40,7 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
   // console.log(watch("subtasks"));
 
   // Handle form submit
-  const onSubmit: SubmitHandler<ITaskFormInput> = (data) => {
+  const onSubmit: SubmitHandler<ITask> = (data) => {
     console.log(data);
     updateTask(data);
     closeEditTaskModal();
@@ -68,10 +65,10 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white dark:bg-gray-darker w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-4 relative">
+      <div className="bg-white dark:bg-gray-dark w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-4 relative">
         {/* Close Modal Button */}
         <div className="absolute right-0 top-0 p-4">
-          <button onClick={closeEditTaskModal}>
+          <button type="button" onClick={closeEditTaskModal}>
             <Image
               src="./assets/icon-cross.svg"
               alt="cross-icon"
@@ -80,7 +77,6 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
             />
           </button>
         </div>
-
         <h2 className="text-hl font-bold dark:text-white">Edit Task</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           {/* Title */}
@@ -95,15 +91,14 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
               id="task-title"
               type="text"
               autoComplete="off"
+              placeholder="e.g. Take a break"
               {...register("title", { required: true })}
-              className={`text-bl text-black dark:text-white placeholder-opacity-25 font-medium p-4 border border-gray-light border-opacity-25 rounded-[4px] h-[40px] dark:bg-gray-darker focus:border-purple-dark focus:outline-none 
-                ${
-                  errors.title
-                    ? "border-red border-opacity-100 focus:border-red"
-                    : ""
-                }`}
+              className={`text-bl text-black dark:text-white placeholder-opacity-25 font-medium p-4 border border-gray-light border-opacity-25 rounded-[4px] h-[40px] dark:bg-gray-dark focus:border-purple-dark focus:outline-none ${
+                errors.title
+                  ? "border-red border-opacity-100 focus:border-red"
+                  : ""
+              }`}
             />
-
             {errors.title && (
               <p className="text-bl font-medium text-red absolute top-8 right-4">
                 Can&apos;t be empty
@@ -121,9 +116,9 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
             </label>
             <textarea
               id="description"
-              placeholder="e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little."
               {...register("description", { required: false })}
-              className="text-bl text-black dark:text-white placeholder-opacity-25 whitespace-pre-wrap font-medium resize-none p-4 border border-gray-light border-opacity-25 rounded-[4px] min-h-[112px] max-w-[416px] w-full dark:bg-gray-darker focus:border-purple-dark focus:outline-none"
+              placeholder="e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little."
+              className="text-bl text-black dark:text-white placeholder-opacity-25 whitespace-pre-wrap font-medium resize-none p-4 border border-gray-light border-opacity-25 rounded-[4px] min-h-[112px] max-w-[416px] w-full dark:bg-gray-dark focus:border-purple-dark focus:outline-none"
             />
           </div>
 
@@ -137,8 +132,8 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
             </label>
 
             {/* Subtask Values */}
-            {fields.map((subtask, index) => (
-              <div key={index} className="flex flex-row gap-4 justify-between">
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex flex-row gap-4 justify-between">
                 <input
                   type="text"
                   id={`subtask-${index}`}
@@ -153,8 +148,7 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
                   {...register(`subtasks.${index}.title`, {
                     required: index === 0,
                   })}
-                  className={`text-bl text-black dark:text-white placeholder-opacity-25 font-medium p-4 border border-gray-light border-opacity-25 rounded-[4px] h-[40px] w-full dark:bg-gray-darker focus:border-purple-dark focus:outline-none 
-                  ${
+                  className={`text-bl text-black dark:text-white placeholder-opacity-25 font-medium p-4 border border-gray-light border-opacity-25 rounded-[4px] h-[40px] w-full dark:bg-gray-dark focus:border-purple-dark focus:outline-none ${
                     errors.subtasks && index === 0
                       ? "border-red border-opacity-100 focus:border-red"
                       : ""
@@ -169,6 +163,7 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
                 {/* Delete Button */}
                 <button
                   id={`delete-subtask-${index}`}
+                  type="button"
                   onClick={() => handleDeleteSubtask(index)}
                 >
                   <svg
@@ -192,7 +187,8 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
 
             <Button
               radius="full"
-                onClick={() => handleAddNewSubtask()}
+              type="button"
+              onClick={() => handleAddNewSubtask()}
               className="bg-purple-dark bg-opacity-10 dark:bg-white dark:text-purple-dark hover:bg-opacity-25 h-10 w-full text-hm font-bold text-purple-dark dark:hover:text-purple-light"
             >
               +Add New Subtask
@@ -210,7 +206,7 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
             <select
               id="priority"
               {...register("status", { required: true })}
-              className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full dark:bg-gray-darker focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
+              className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full dark:bg-gray-dark focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
             >
               {selectedBoardColumns?.map((column, index) => (
                 <option
@@ -218,6 +214,7 @@ const EditTaskModal = ({ closeEditTaskModal }: EditTaskModalProps) => {
                   value={column.name}
                   className="text-bl font-medium dark:bg-gray-darker bg-white dark:text-white"
                 >
+                  {column.name}
                 </option>
               ))}
             </select>

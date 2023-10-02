@@ -30,8 +30,9 @@ export interface IBoardContextValue {
   updateBoard: (boardIndex: number, updateBoard: IBoard) => void;
   deleteBoard: (boardIndex: number) => void;
   addTask: (task: ITask) => void;
+  updateTask: (task: ITask) => void;
   selectedTask: { task: ITask; index: number } | null;
   setSelectedTask: (task: { task: ITask; index: number } | null) => void;
-  updateTask: (prevTask:ITask, task: ITask) => void;
+  updateTaskStatus: (prevTask:ITask, task: ITask) => void;
   deleteTask: (task: ITask) => void;
 }
