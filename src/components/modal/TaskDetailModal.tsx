@@ -137,9 +137,6 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
         task: { ...selectedTask.task, status: boardColumns[1] },
       });
     }
-
-    // updateTask(selectedTask!.task);
-    // console.log("selectedTaskNormal", selectedTask.task.status)
   };
 
   // Handle Edit Task Modal Open
@@ -152,7 +149,6 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
     setIsEditTaskModalOpen(false);
     setIsEditDeleteTaskModalOpen(false);
     closeTaskDetailModal();
-    // console.log("closeEditTaskModal Worked");
   };
 
   // Handle Delete Task Modal Open
@@ -174,9 +170,6 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
     deleteTask(selectedTask.task);
     closeTaskDetailModal();
   };
-  // console.log("selectedBoard", selectedBoard);
-  // console.log("selectedColumn", selectedColumn);
-  // console.log("selectedTasks", selectedTask);
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex justify-center items-center">

@@ -28,7 +28,7 @@ export interface IBoardContextValue {
   setSelectedColumn: (columnName: string | null) => void;
   addBoard: (board: IBoard) => void;
   updateBoard: (boardIndex: number, updateBoard: IBoard) => void;
-  deleteBoard: (boardIndex: number) => void;
+  deleteBoard: (boardName: string) => void;
   addTask: (task: ITask) => void;
   updateTask: (task: ITask) => void;
   selectedTask: { task: ITask; index: number } | null;

@@ -48,20 +48,28 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   // Add a new board to the boards array
   const addBoard = (board: IBoard) => {
     setBoards([...boards, board]);
+    setSelectedBoard(board.name);
   };
 
   // Update and existing board in the boards array
   const updateBoard = (boardIndex: number, updateBoard: IBoard) => {
-    const updatedBoards = [...boards];
-    updatedBoards[boardIndex] = updateBoard;
-    setBoards(updatedBoards);
+    setBoards((prevBoards) => {
+      const newBoards = [...prevBoards];
+      newBoards[boardIndex] = updateBoard;
+      return newBoards;
+    });
   };
 
   // Delete a board from the boards array
-  const deleteBoard = (boardIndex: number) => {
-    const updatedBoards = [...boards];
-    updatedBoards.splice(boardIndex, 1);
-    setBoards(updatedBoards);
+  const deleteBoard = (boardName: string) => {
+    console.log("Delete Board Function from BoardContext.tsx", boards);
+
+    const boardIndex = boards.findIndex((board) => board.name === boardName);
+    if (boardIndex !== -1) {
+      const updatedBoards = [...boards];
+      updatedBoards.splice(boardIndex, 1);
+      setBoards(updatedBoards);
+    }
   };
 
   // Add a new task to the selected board and update columns accordingly
@@ -165,8 +173,6 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Delete the selected task
   const deleteTask = (task: ITask) => {
-    console.log("Delete Task Function from BoardContext.tsx");
-
     setBoards((prevBoards) =>
       prevBoards.map((board) => ({
         ...board,

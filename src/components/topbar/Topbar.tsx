@@ -6,14 +6,17 @@ import { ThemeContext } from "@/context/ThemeContext";
 import Image from "next/image";
 import AddTaskModal from "../modal/AddTaskModal";
 import { BoardContext } from "@/context/BoardContext";
+import EditBoardModal from "../modal/EditBoardModal";
 import DeleteBoardModal from "../modal/DeleteBoardModal";
+import { set } from "react-hook-form";
 
 const Topbar = () => {
   const [isTaskModalOpen, setTaskModalOpen] = useState(false);
+  const [isEditDeleteBoardModalOpen, setIsEditDeleteBoardModalOpen] = useState(false);
   const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
   const [isDeleteBoardModalOpen, setIsDeleteBoardModalOpen] = useState(false);
 
-  const { boards, selectedBoard } = useContext(BoardContext);
+  const { boards, selectedBoard, setSelectedBoard, deleteBoard } = useContext(BoardContext);
 
   const context = useContext(ThemeContext);
   // Check if the context is undefinded.
@@ -37,7 +40,18 @@ const Topbar = () => {
 
   // Handle List Icon Click
   const handleListIconClick = () => {
-    setIsEditBoardModalOpen(!isEditBoardModalOpen);
+    setIsEditDeleteBoardModalOpen(!isEditDeleteBoardModalOpen);
+  };
+
+  // Handle the edit board modal open
+  const handleEditBoardModalOpen = () => {
+    setIsEditBoardModalOpen(true);
+  };
+
+  // Handle the edit board modal close
+  const handleEditBoardModalClose = () => {
+    setIsEditBoardModalOpen(false);
+    handleListIconClick();
   };
 
   // Handle the delete board confirmation modal open
@@ -48,6 +62,17 @@ const Topbar = () => {
   // Handle the delete board confirmation modal close
   const handleDeleteBoardModalClose = () => {
     setIsDeleteBoardModalOpen(false);
+    handleListIconClick();
+  };
+
+  const handleDeleteBoard = () => {
+    // Check if the selected task exists
+    if (selectedBoard) {
+      deleteBoard(selectedBoard);
+      handleDeleteBoardModalClose();
+      handleListIconClick();
+      (setSelectedBoard(boards[0].name));
+    }
   };
 
   return (
@@ -99,24 +124,34 @@ const Topbar = () => {
         </div>
 
         {/* Open Edit Delete Board Modal */}
-        {isEditBoardModalOpen && (
+        {isEditDeleteBoardModalOpen && (
           <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white shadow-md rounded-md top-[80px] right-[-61px]">
-            <p className="text-bl text-gray-light font-medium hover:font-bold cursor-pointer">
+            <button
+              type="button"
+              onClick={handleEditBoardModalOpen}
+              className="text-bl text-gray-light font-medium hover:font-bold cursor-pointer"
+            >
               Edit Board
-            </p>
-            <p
+            </button>
+            <button
+              type="button"
               className="text-bl text-red font-medium hover:font-bold cursor-pointer"
               onClick={handleDeleteBoardModalOpen}
             >
               Delete Board
-            </p>
+            </button>
           </div>
+        )}
+
+        {/* Open Edit Board Modal */}
+        {isEditBoardModalOpen && (
+          <EditBoardModal closeEditBoardModal={handleEditBoardModalClose} closeEditDeleteBoardModal={handleListIconClick} />
         )}
 
         {/* Open Delete Board Modal Confirmation */}
         {isDeleteBoardModalOpen && (
           <DeleteBoardModal
-            closeDeleteBoardModal={handleDeleteBoardModalClose}
+            closeDeleteBoardModal={handleDeleteBoardModalClose} confirmDeleteBoard={handleDeleteBoard}
           />
         )}
       </div>

@@ -20,7 +20,8 @@ const EditTaskModal = ({
   closeEditTaskModal,
   closeTaskDetailModal,
 }: EditTaskModalProps) => {
-  const { boards, selectedBoard, selectedTask, setSelectedTask, deleteTask, updateTask } =
+
+  const { boards, selectedBoard, selectedTask, updateTask } =
     useContext(BoardContext);
 
   const {

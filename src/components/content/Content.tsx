@@ -12,6 +12,8 @@ import { IColumn, ISubtask, ITask, IBoard } from "@/context/BoardInterface";
 const Content = () => {
   const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
   const [isTaskDetailModalOpen, setTaskDetailModalOpen] = useState(false);
+  const [isEditDeleteBoardModalOpen, setIsEditDeleteBoardModalOpen] =
+    useState(false);
 
   // Board context
   const {
@@ -34,6 +36,11 @@ const Content = () => {
   // Handle the edit board modal open
   const handleEditBoardModalOpen = () => {
     setIsEditBoardModalOpen(true);
+  };
+
+  // Handle List Icon Click for open edit board modal
+  const handleListIconClick = () => {
+    setIsEditDeleteBoardModalOpen(!isEditDeleteBoardModalOpen);
   };
 
   // Handle the edit board modal close
@@ -100,31 +107,32 @@ const Content = () => {
               <h5 className=" text-hs pl-6 font-bold text-gray-light">
                 {/* Color before column name */}
                 {column.name.toLocaleUpperCase()} {"("}
-                {column.tasks.length}
+                {column.tasks ? column.tasks.length : 0}
                 {")"}
               </h5>
             </div>
 
             {/* Column tasks */}
-            {column.tasks.map((task, index) => (
-              // Task item
-              <div
-                className="flex flex-col gap-2 min-h-[88px] bg-white dark:bg-gray-dark shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5 cursor-pointer"
-                key={index}
-                onClick={() => handleTaskDetailModalOpen(task, index)}
-              >
-                <h3 className="text-hm font-bold dark:text-white">
-                  {task.title}
-                </h3>
-                <p className="text-bm text-gray-light font-bold">
-                  {
-                    task.subtasks.filter((subtask) => subtask.isCompleted)
-                      .length
-                  }{" "}
-                  of {task.subtasks.length} substasks
-                </p>
-              </div>
-            ))}
+            {column.tasks &&
+              column.tasks.map((task, index) => (
+                // Task item
+                <div
+                  className="flex flex-col gap-2 min-h-[88px] bg-white dark:bg-gray-dark shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5 cursor-pointer"
+                  key={index}
+                  onClick={() => handleTaskDetailModalOpen(task, index)}
+                >
+                  <h3 className="text-hm font-bold dark:text-white">
+                    {task.title}
+                  </h3>
+                  <p className="text-bm text-gray-light font-bold">
+                    {
+                      task.subtasks.filter((subtask) => subtask.isCompleted)
+                        .length
+                    }{" "}
+                    of {task.subtasks.length} substasks
+                  </p>
+                </div>
+              ))}
           </div>
         ))}
         {/* Open TaskDetailModal */}
@@ -160,13 +168,16 @@ const Content = () => {
 
           {/* Open edit board modal */}
           {isEditBoardModalOpen && (
-            <EditBoardModal closeEditBoardModal={handleEditBoardModalClose} />
+            <EditBoardModal
+              closeEditBoardModal={handleEditBoardModalClose}
+              closeEditDeleteBoardModal={handleListIconClick}
+            />
           )}
 
-          {/* Absolute position for the  */}
+          {/* Absolute position for the showSidebar and hideSidebar */}
           {hideSidebar && (
             <div
-              className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
+              className=" bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
               onClick={toggleHideSidebar}
             >
               <Image
