@@ -108,11 +108,11 @@ const Content = () => {
             ? "hidden"
             : currentBoard?.columns.length === 0
             ? "hidden"
-            : "relative flex flex-row gap-6 h-full bg-blue-lighter dark:bg-gray-darker p-6"
+            : "relative flex flex-row gap-6 h-full bg-blue-lighter dark:bg-gray-darker p-6 xs:px-4 xs:flex-col xs:gap-10 xs:min-h-[970px] xs:h-full"
         }`}
       >
         {currentBoard?.columns.map((column, index) => (
-          <div className="flex flex-col gap-6 w-[280px]" key={index}>
+          <div className="flex flex-col gap-6 min-w-[280px]" key={index}>
             {/* Column name */}
             <div className="relative flex items-center">
               <div
@@ -159,8 +159,8 @@ const Content = () => {
         {currentBoard?.columns.length === 0 ? (
           <div className="hidden"></div>
         ) : (
-          <div className="flex flex-col gap-6 w-[280px] mt-[38px]">
-            <div className="flex flex-col items-center justify-center gap-2 min-h-[814px] bg-blue-lightest dark:bg-gradient-to-r from-gray-darker to-gray-dark dark:bg-opacity-25 shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5">
+          <div className="flex flex-col gap-6 w-[280px] mt-[38px] xs:hidden">
+            <div className="flex flex-col items-center justify-center gap-2 min-h-[814px] bg-gradient-to-b from-[#E9EFFA] to-[#E9EFFA] from-opacity-100 to-opacity-50 dark:from-gray-dark dark:to-gray-dark dark:from-opacity-100 dark:to-opacity-50 via-opacity-50 dark:opacity-25 shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5">
               <h1 className="text-hxl font-bold text-center text-gray-light p-4 cursor-pointer" onClick={handleEditBoardModalOpen}>
                 + New Column
               </h1>
@@ -179,7 +179,7 @@ const Content = () => {
         {/* Absolute position for the toggle icon when hideSidebar is true */}
         {hideSidebar && (
           <div
-            className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
+            className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full xs:hidden"
             onClick={toggleHideSidebar}
           >
             <Image
@@ -193,14 +193,11 @@ const Content = () => {
         )}
       </div>
 
-      {/* IF No Board */}
-      {/* {boards.length === 0 && <div>Add new Board</div>} */}
-
       {/* IF NO ANY COLUMNS */}
       {(currentBoard?.columns.length === 0 || boards.length === 0) && (
-        <div className="relative max-w-[1240px] h-[calc(100vh-96px)] bg-blue-lighter dark:bg-gray-darker flex items-center justify-center">
-          <div className="flex flex-col items-center justify-center gap-6">
-            <h2 className="text-hl font-bold text-gray-light">
+        <div className="relative max-w-[1240px] h-[calc(100vh-96px)] bg-blue-lighter dark:bg-gray-darker flex items-center justify-center ">
+          <div className="flex flex-col items-center justify-center gap-6 xs:w-[343px]">
+            <h2 className="text-hl font-bold text-gray-light xs:text-center">
               This board is empty. Create a new{" "}
               {boards.length === 0 ? " boards " : " column "} to get started.
             </h2>
@@ -211,7 +208,7 @@ const Content = () => {
                   ? handleNewBoardModalOpen
                   : handleEditBoardModalOpen
               }
-              className="bg-purple-dark hover:bg-purple-light h-12 w-[164px] text-hm font-bold text-white"
+              className="bg-purple-dark hover:bg-purple-light h-12 w-[164px] text-hm font-bold text-white xs:w-[174px]"
             >
               {boards.length === 0 ? "+ Add New Board" : "+ Add New Column"}
             </Button>
@@ -233,7 +230,7 @@ const Content = () => {
           {/* Absolute position for the toggle icon when hideSidebar is true */}
           {hideSidebar && (
             <div
-              className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
+              className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full xs:hidden"
               onClick={toggleHideSidebar}
             >
               <Image

@@ -50,7 +50,7 @@ const EditBoardModal = ({ closeEditBoardModal, closeEditDeleteBoardModal }: Edit
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white dark:bg-gray-dark w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-6 relative">
+      <div className="bg-white dark:bg-gray-dark w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-6 relative xs:w-[343px] xs:min-h-[473px] xs:px-6">
         {/* Close Modal Button */}
         <div className="absolute right-0 top-0 p-4">
           <button onClick={closeEditBoardModal}>

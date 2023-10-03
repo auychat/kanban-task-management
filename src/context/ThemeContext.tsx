@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useState, useEffect, ReactNode, } from "react";
 
 // Define the type for the context value
 type ThemeContextType = {
@@ -10,6 +10,7 @@ type ThemeContextType = {
   toggleHideSidebar: () => void;
   selectedBoard: string | null;
   setSelectedBoard: (board: string | null) => void;
+  screenSizeWidth: number | undefined;
 };
 
 // Create the context with the default value
@@ -19,14 +20,11 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState("light");
-  // const [mode, setMode] = useState<string>(() => {
-  //   if (typeof window !== "undefined") {
-  //     return localStorage.getItem("themeMode") || "light";
-  //   }
-  //   return "light";
-  // });
   const [hideSidebar, setHideSidebar] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
+  const [sreenSizeWidth, setSreenSizeWidth] = useState<number | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     // Load the theme mode from localStorage when the component mounts
@@ -68,6 +66,29 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     setHideSidebar((prev) => !prev);
   };
 
+  // Function to set the screen size width
+  useEffect(() => {
+    setSreenSizeWidth(window.innerWidth);
+
+    const handleResize = () => {
+      setSreenSizeWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [sreenSizeWidth]);
+
+  useEffect(() => {
+    if (sreenSizeWidth && sreenSizeWidth < 513) {
+      setHideSidebar(true);
+    } else {
+      setHideSidebar(false);
+    }
+  }, [sreenSizeWidth, setHideSidebar]);
+
   return (
     <ThemeContext.Provider
       value={{
@@ -77,6 +98,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         toggleHideSidebar,
         selectedBoard,
         setSelectedBoard,
+        screenSizeWidth: sreenSizeWidth,
       }}
     >
       {children}

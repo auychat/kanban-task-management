@@ -29,7 +29,7 @@ const DarkModeToggle = () => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center gap-4 p-4 max-w-[251px] max-h-[48px] bg-blue-lighter dark:bg-gray-darker w-full h-full rounded-md">
+    <div className="flex flex-row items-center justify-center gap-4 p-4 max-w-[251px] max-h-[48px] bg-blue-lighter dark:bg-gray-darker w-full h-full rounded-md xs:max-w-[235px]">
       <Image
         src="./assets/icon-light-theme.svg"
         alt="sun-icon"

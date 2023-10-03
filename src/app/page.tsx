@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <main className='w-full h-full flex flex-row'>
       <Sidebar />
-      <div className='flex flex-col'>
+      <div className='flex flex-col w-full'>
       <Topbar />
       <Content />
 

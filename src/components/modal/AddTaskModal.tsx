@@ -53,7 +53,6 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
     }
   };
 
-  // console.log("selectedBoard", selectedBoard);
   // Only selected board's columns
   const selectedBoardColumns = boards.find(
     (board) => board.name === selectedBoard
@@ -61,7 +60,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white dark:bg-gray-dark w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-4 relative">
+      <div className="bg-white dark:bg-gray-dark w-[480px] min-h-[429px] p-8 rounded-lg flex flex-col gap-4 relative xs:w-[343px] xs:p-6">
         {/* Close Modal Button */}
         <div className="absolute right-0 top-0 p-4">
           <button type="button" onClick={closeTaskModal}>
@@ -203,7 +202,7 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
             <select
               id="priority"
               {...register("status", { required: true })}
-              className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full dark:bg-gray-dark focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
+              className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full bg-white dark:bg-gray-dark focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
             >
               {selectedBoardColumns?.map((column, index) => (
                 <option

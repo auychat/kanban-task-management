@@ -8,6 +8,7 @@ import AddTaskModal from "../modal/AddTaskModal";
 import { BoardContext } from "@/context/BoardContext";
 import EditBoardModal from "../modal/EditBoardModal";
 import DeleteBoardModal from "../modal/DeleteBoardModal";
+import MobileNavBoardModal from "./MobileNavBoardModal";
 
 const Topbar = () => {
   const [isTaskModalOpen, setTaskModalOpen] = useState(false);
@@ -15,6 +16,7 @@ const Topbar = () => {
     useState(false);
   const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
   const [isDeleteBoardModalOpen, setIsDeleteBoardModalOpen] = useState(false);
+  const [isNavBoardModalOpen, setIsNavBoardModalOpen] = useState(false);
 
   const { boards, selectedBoard, setSelectedBoard, deleteBoard } =
     useContext(BoardContext);
@@ -25,7 +27,7 @@ const Topbar = () => {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
   // Otherwise, return the context value.
-  const { mode, hideSidebar, toggleHideSidebar } = context;
+  const { mode, hideSidebar, toggleHideSidebar, screenSizeWidth } = context;
   const logoSrc =
     mode === "light" ? "/assets/logo-dark.svg" : "/assets/logo-light.svg";
 
@@ -75,30 +77,80 @@ const Topbar = () => {
     }
   };
 
+  const handleMobileNavBoardModalOpen = () => {
+    setIsNavBoardModalOpen(true);
+  };
+
+  const handleMobileNavBoardModalClose = () => {
+    setIsNavBoardModalOpen(false);
+  };
+
   return (
-    <div className="relative max-h-[96px] max-w-[1240px] h-full w-screen border-1 border-l-0 border-blue-lightest dark:border-gray-medium bg-white dark:bg-gray-dark flex flex-row justify-between items-center p-6">
-      <div className="flex flex-row gap-8 items-center">
+    <div className="relative max-h-[96px] h-full w-full border-1 border-l-0 border-blue-lightest dark:border-gray-medium bg-white dark:bg-gray-dark flex flex-row justify-between items-center p-6 xs:max-w-[513px] xs:h-[64px] xs:p-4">
+      <div className="flex flex-row gap-8 items-center xs:gap-4">
         {/* Logo Section */}
         <>
           {hideSidebar && (
-            <div className="flex pr-8">
-              <div className="absolute border-r border-blue-lightest dark:border-gray-medium min-h-[96px] h-full top-0 left-[210px] z-10"></div>
-              <Image
-                src={logoSrc}
-                alt="logo"
-                width={152}
-                height={25}
-                className="w-auto h-auto"
-              />
+            <div className="flex pr-8 xs:pr-0">
+              <div className="absolute border-r border-blue-lightest dark:border-gray-medium min-h-[96px] h-full top-0 left-[210px] z-10 xs:hidden"></div>
+
+              {screenSizeWidth! < 513 ? (
+                // Mobile Logo
+                <Image
+                  src="./assets/logo-mobile.svg"
+                  alt="mobile-logo"
+                  width={152}
+                  height={25}
+                  className="w-auto h-auto"
+                />
+              ) : (
+                <Image
+                  src={logoSrc}
+                  alt="logo"
+                  width={152}
+                  height={25}
+                  className="w-auto h-auto"
+                />
+              )}
             </div>
           )}
         </>
-        <h1 className="text-hxl font-bold dark:text-white">{selectedBoard}</h1>
+        {/* For Mobile Devices */}
+        <div className="flex flex-row items-center justify-center ">
+          <h1 className="text-hxl font-bold dark:text-white xs:text-hl">
+            {selectedBoard}
+          </h1>
+          {/* Chevron Icon Up and Down */}
+          <div className="xs:block">
+            {isNavBoardModalOpen ? (
+              <Image
+                src="./assets/icon-chevron-up.svg"
+                alt="chevron-icon-up"
+                width={152}
+                height={25}
+                onClick={handleMobileNavBoardModalClose}
+                className="w-auto h-auto p-2 cursor-pointer"
+              />
+            ) : (
+              <Image
+                src="./assets/icon-chevron-down.svg"
+                alt="chevron-icon-down"
+                width={152}
+                height={25}
+                onClick={handleMobileNavBoardModalOpen}
+                className="w-auto h-auto p-2 cursor-pointer"
+              />
+            )}
+
+            {/* Open MobileNavBoardModal */}
+            {isNavBoardModalOpen && <MobileNavBoardModal closeMobileNavBoardModal={handleMobileNavBoardModalClose} />}
+          </div>
+        </div>
       </div>
-      <div className="flex flex-row gap-6">
+      <div className="flex flex-row gap-6 xs:gap-0">
         <Button
           radius="full"
-          className={`bg-purple-dark h-12 w-[164px] text-hm font-bold text-white ${
+          className={`bg-purple-dark h-12 w-[164px] text-hm font-bold text-white xs:h-[32px] xs:w-[48px] xs:min-w-unit-1 xs:px-0 ${
             boards.find((board) => board.name === selectedBoard)?.columns
               .length === 0
               ? "opacity-25 cursor-default"
@@ -112,7 +164,17 @@ const Topbar = () => {
               : handleTaskModalOpen
           }
         >
-          +Add New Task
+          {/* + Icon */}
+          {screenSizeWidth! < 513 ? (
+            <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">
+              <path
+                fill="#FFF"
+                d="M7.368 12V7.344H12V4.632H7.368V0H4.656v4.632H0v2.712h4.656V12z"
+              />
+            </svg>
+          ) : (
+            "+Add New Task"
+          )}
         </Button>
 
         {/* List Icon */}
@@ -131,7 +193,7 @@ const Topbar = () => {
 
         {/* Open Edit Delete Board Modal */}
         {isEditDeleteBoardModalOpen && (
-          <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white dark:bg-gray-darker shadow-md rounded-md top-[85px] right-[24px] z-50">
+          <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white dark:bg-gray-darker shadow-md rounded-md top-[85px] right-[24px] z-50 xs:w-[120px] xs:h-[80px] xs:top-[65px] xs:right-[0px] xs:p-2">
             <button
               type="button"
               onClick={handleEditBoardModalOpen}

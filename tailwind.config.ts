@@ -17,6 +17,13 @@ const config: Config = {
       "hl": ["18px", { lineHeight: "23px", }],
       "hxl": ["24px", { lineHeight: "30px", }],
     },
+    screens: {
+      xs: { max: "512px" },
+      // sm: { min: "512px", max: "768px" },
+      // md: { min: "769px", max: "1024px" },
+      // lg: { min: "1025px", max: "1280px" },
+      // xl: { min: "1281px" },
+    },
     extend: {
       backgroundImage: {
       },
