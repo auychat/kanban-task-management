@@ -161,10 +161,18 @@ const Content = () => {
         ) : (
           <div className="flex flex-col gap-6 w-[280px] mt-[38px]">
             <div className="flex flex-col items-center justify-center gap-2 min-h-[814px] bg-blue-lightest dark:bg-gradient-to-r from-gray-darker to-gray-dark dark:bg-opacity-25 shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5">
-              <h1 className="text-hxl font-bold  text-center text-gray-light">
+              <h1 className="text-hxl font-bold text-center text-gray-light p-4 cursor-pointer" onClick={handleEditBoardModalOpen}>
                 + New Column
               </h1>
             </div>
+
+            {/* Open Edit Board Modal */}
+            {isEditBoardModalOpen && (
+              <EditBoardModal
+                closeEditBoardModal={handleEditBoardModalClose}
+                closeEditDeleteBoardModal={handleListIconClick}
+              />
+            )}
           </div>
         )}
 
@@ -189,53 +197,56 @@ const Content = () => {
       {/* {boards.length === 0 && <div>Add new Board</div>} */}
 
       {/* IF NO ANY COLUMNS */}
-      {(currentBoard?.columns.length === 0 ||
-        boards.length === 0) && (
-          <div className="relative max-w-[1240px] h-[calc(100vh-96px)] bg-blue-lighter dark:bg-gray-darker flex items-center justify-center">
-            <div className="flex flex-col items-center justify-center gap-6">
-              <h2 className="text-hl font-bold text-gray-light">
-                This board is empty. Create a new{" "}
-                {boards.length === 0 ? " boards " : " column "} to get started.
-              </h2>
-              <Button
-                radius="full"
-                onClick={boards.length === 0 ? handleNewBoardModalOpen : handleEditBoardModalOpen}
-                className="bg-purple-dark hover:bg-purple-light h-12 w-[164px] text-hm font-bold text-white"
-              >
-                {boards.length === 0 ? "+ Add New Board" : "+ Add New Column"}
-              </Button>
+      {(currentBoard?.columns.length === 0 || boards.length === 0) && (
+        <div className="relative max-w-[1240px] h-[calc(100vh-96px)] bg-blue-lighter dark:bg-gray-darker flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-6">
+            <h2 className="text-hl font-bold text-gray-light">
+              This board is empty. Create a new{" "}
+              {boards.length === 0 ? " boards " : " column "} to get started.
+            </h2>
+            <Button
+              radius="full"
+              onClick={
+                boards.length === 0
+                  ? handleNewBoardModalOpen
+                  : handleEditBoardModalOpen
+              }
+              className="bg-purple-dark hover:bg-purple-light h-12 w-[164px] text-hm font-bold text-white"
+            >
+              {boards.length === 0 ? "+ Add New Board" : "+ Add New Column"}
+            </Button>
 
-              {/* Open New Board Modal */}
-              {isNewBoardModalOpen && (
-                <AddBoardModal closeModal={handleNewBoardModalClose} />
-              )}
-            </div>
-
-            {/* Open edit board modal */}
-            {isEditBoardModalOpen && (
-              <EditBoardModal
-                closeEditBoardModal={handleEditBoardModalClose}
-                closeEditDeleteBoardModal={handleListIconClick}
-              />
-            )}
-
-            {/* Absolute position for the toggle icon when hideSidebar is true */}
-            {hideSidebar && (
-              <div
-                className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
-                onClick={toggleHideSidebar}
-              >
-                <Image
-                  src="./assets/icon-show-sidebar.svg"
-                  alt="show-sidebar-icon"
-                  width={16}
-                  height={16}
-                  className="w-[16px] h-auto object-contain"
-                />
-              </div>
+            {/* Open New Board Modal */}
+            {isNewBoardModalOpen && (
+              <AddBoardModal closeModal={handleNewBoardModalClose} />
             )}
           </div>
-        )}
+
+          {/* Open edit board modal */}
+          {isEditBoardModalOpen && (
+            <EditBoardModal
+              closeEditBoardModal={handleEditBoardModalClose}
+              closeEditDeleteBoardModal={handleListIconClick}
+            />
+          )}
+
+          {/* Absolute position for the toggle icon when hideSidebar is true */}
+          {hideSidebar && (
+            <div
+              className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full"
+              onClick={toggleHideSidebar}
+            >
+              <Image
+                src="./assets/icon-show-sidebar.svg"
+                alt="show-sidebar-icon"
+                width={16}
+                height={16}
+                className="w-[16px] h-auto object-contain"
+              />
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 };

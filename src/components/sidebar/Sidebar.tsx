@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import DarkModeToggle from "./DarkModeToggle";
 import { ThemeContext } from "@/context/ThemeContext";
 import AddBoardModal from "../modal/AddBoardModal";
@@ -18,20 +18,17 @@ const Sidebar = () => {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
   // Otherwise, return the context value.
-  const {
-    mode,
-    hideSidebar,
-    toggleHideSidebar,
-  } = context;
+  const { mode, hideSidebar, toggleHideSidebar } = context;
 
-  const logoSrc =
-    mode === "light" ? "/assets/logo-dark.svg" : "/assets/logo-light.svg";
+  // const logoSrc =
+  //   mode === "light" ? "/assets/logo-dark.svg" : "/assets/logo-light.svg";
 
   useEffect(() => {
     if (selectedBoard === null && boards.length > 0) {
       setSelectedBoard(boards[0].name);
     }
   }, [selectedBoard, setSelectedBoard, boards]);
+
 
   // Handle the New Board modal open
   const handleModalOpen = () => {
@@ -51,7 +48,8 @@ const Sidebar = () => {
             {/* Logo Section */}
             <div className="flex p-8">
               <Image
-                src={logoSrc}
+                id="logo-img"
+                src={mode === "light" ? "/assets/logo-dark.svg" : "/assets/logo-light.svg"}
                 alt="logo"
                 width={152}
                 height={25}
@@ -114,7 +112,9 @@ const Sidebar = () => {
                 </h4>
               </div>
               {/* Open New Board Modal */}
-              {isNewBoardModalOpen && <AddBoardModal closeModal={handleModalClose} />}
+              {isNewBoardModalOpen && (
+                <AddBoardModal closeModal={handleModalClose} />
+              )}
             </div>
           </div>
           {/* Bottom Section */}

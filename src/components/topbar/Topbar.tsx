@@ -131,7 +131,7 @@ const Topbar = () => {
 
         {/* Open Edit Delete Board Modal */}
         {isEditDeleteBoardModalOpen && (
-          <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white shadow-md rounded-md top-[80px] right-[-61px] z-50">
+          <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white dark:bg-gray-darker shadow-md rounded-md top-[85px] right-[24px] z-50">
             <button
               type="button"
               onClick={handleEditBoardModalOpen}
