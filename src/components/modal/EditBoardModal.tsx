@@ -10,7 +10,10 @@ interface EditBoardModalProps {
   closeEditDeleteBoardModal: () => void;
 }
 
-const EditBoardModal = ({ closeEditBoardModal, closeEditDeleteBoardModal }: EditBoardModalProps) => {
+const EditBoardModal = ({
+  closeEditBoardModal,
+  closeEditDeleteBoardModal,
+}: EditBoardModalProps) => {
   const { boards, selectedBoard, updateBoard } = useContext(BoardContext);
 
   const prevBoard = boards.find((board) => board.name === selectedBoard);
@@ -41,7 +44,8 @@ const EditBoardModal = ({ closeEditBoardModal, closeEditDeleteBoardModal }: Edit
 
   // Handle add new column
   const handleAddNewColumn = () => {
-    append({ name: "", tasks: [] });
+    const columnIndex = fields.length;
+    append({ id: columnIndex.toString(), name: "", tasks: [] });
   };
 
   const handleDeleteColumn = (index: number) => {

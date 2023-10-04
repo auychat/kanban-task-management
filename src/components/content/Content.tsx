@@ -7,8 +7,14 @@ import Image from "next/image";
 import EditBoardModal from "../modal/EditBoardModal";
 import { BoardContext } from "@/context/BoardContext";
 import TaskDetailModal from "../modal/TaskDetailModal";
-import { IColumn, ISubtask, ITask, IBoard } from "@/context/BoardInterface";
+import { ITask, IBoard } from "@/context/BoardInterface";
 import AddBoardModal from "../modal/AddBoardModal";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
 
 const Content = () => {
   const [isEditBoardModalOpen, setIsEditBoardModalOpen] = useState(false);
@@ -85,6 +91,52 @@ const Content = () => {
     setCurrentBoard(board);
   }, [boards, selectedBoard, selectedTask]);
 
+  // Handle the drag and drop
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+
+    // If there is no destination, return (the task is not moved)
+    if (!destination) {
+      return;
+    }
+
+    // If the destination is the same as the source, return (the task is not moved)
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    // Find the column where the task is moved to (destination)
+    const column = currentBoard?.columns.find(
+      (column) => column.id === destination.droppableId
+    );
+
+    // Find the task that is moved (draggableId)
+    const task = currentBoard?.columns
+      .find((column) => column.id === source.droppableId)
+      ?.tasks.find((task) => task.id === draggableId);
+
+    // Remove the task from the source column (source)
+    const sourceColumn = currentBoard?.columns.find(
+      (column) => column.id === source.droppableId
+    );
+    sourceColumn?.tasks.splice(source.index, 1);
+
+    // Add the task to the destination column
+    column?.tasks.splice(destination.index, 0, task!);
+
+    // Update the current board
+    const updatedBoard = {
+      ...currentBoard!,
+      columns: currentBoard!.columns.map((col) =>
+        col.id === column?.id ? column : col
+      ),
+    };
+    setCurrentBoard(updatedBoard);
+  };
+
   const randomColorbyIndex = (index: number) => {
     const colors = [
       "#49C4E5",
@@ -111,45 +163,72 @@ const Content = () => {
             : "relative flex flex-row gap-6 h-full bg-blue-lighter dark:bg-gray-darker p-6 xs:px-4 xs:flex-col xs:gap-10 xs:min-h-[970px] xs:h-full"
         }`}
       >
-        {currentBoard?.columns.map((column, index) => (
-          <div className="flex flex-col gap-6 min-w-[280px]" key={index}>
-            {/* Column name */}
-            <div className="relative flex items-center">
-              <div
-                className="absolute w-[15px] h-[15px] rounded-full"
-                style={{ backgroundColor: randomColorbyIndex(index) }}
-              ></div>
-              <h5 className=" text-hs pl-6 font-bold text-gray-light">
-                {/* Color before column name */}
-                {column.name.toLocaleUpperCase()} {"("}
-                {column.tasks ? column.tasks.length : 0}
-                {")"}
-              </h5>
-            </div>
-
-            {/* Column tasks */}
-            {column.tasks &&
-              column.tasks.map((task, index) => (
-                // Task item
+        <DragDropContext onDragEnd={onDragEnd}>
+          {/* Column items */}
+          {currentBoard?.columns.map((column, index) => (
+            <Droppable key={column.id} droppableId={column.id}>
+              {(provided) => (
                 <div
-                  className="flex flex-col gap-2 min-h-[88px] bg-white dark:bg-gray-dark shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5 cursor-pointer"
                   key={index}
-                  onClick={() => handleTaskDetailModalOpen(task, index)}
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="flex flex-col gap-6 min-w-[280px]"
                 >
-                  <h3 className="text-hm font-bold dark:text-white">
-                    {task.title}
-                  </h3>
-                  <p className="text-bm text-gray-light font-bold">
-                    {
-                      task.subtasks.filter((subtask) => subtask.isCompleted)
-                        .length
-                    }{" "}
-                    of {task.subtasks.length} substasks
-                  </p>
+                  {/* Column name */}
+                  <div className="relative flex items-center">
+                    <div
+                      className="absolute w-[15px] h-[15px] rounded-full"
+                      style={{ backgroundColor: randomColorbyIndex(index) }}
+                    ></div>
+                    <h5 className=" text-hs pl-6 font-bold text-gray-light">
+                      {/* Color before column name */}
+                      {column.name.toLocaleUpperCase()} {"("}
+                      {column.tasks ? column.tasks.length : 0}
+                      {")"}
+                    </h5>
+                  </div>
+
+                  {/* Column tasks */}
+                  {column.tasks &&
+                    column.tasks.map((task, index) => (
+                      // Task item
+                      <Draggable
+                        key={task.id}
+                        draggableId={task.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            key={index}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="flex flex-col gap-2 min-h-[88px] bg-white dark:bg-gray-dark shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5 cursor-pointer"
+                            onClick={() =>
+                              handleTaskDetailModalOpen(task, index)
+                            }
+                          >
+                            <h3 className="text-hm font-bold dark:text-white">
+                              {task.title}
+                            </h3>
+                            <p className="text-bm text-gray-light font-bold">
+                              {
+                                task.subtasks.filter(
+                                  (subtask) => subtask.isCompleted
+                                ).length
+                              }{" "}
+                              of {task.subtasks.length} substasks
+                            </p>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                  {provided.placeholder}
                 </div>
-              ))}
-          </div>
-        ))}
+              )}
+            </Droppable>
+          ))}
+        </DragDropContext>
         {/* Open TaskDetailModal */}
         {isTaskDetailModalOpen && (
           <TaskDetailModal closeTaskDetailModal={handleTaskDetailModalClose} />
@@ -161,7 +240,10 @@ const Content = () => {
         ) : (
           <div className="flex flex-col gap-6 w-[280px] mt-[38px] xs:hidden">
             <div className="flex flex-col items-center justify-center gap-2 min-h-[814px] bg-gradient-to-b from-[#E9EFFA] to-[#E9EFFA] from-opacity-100 to-opacity-50 dark:from-gray-dark dark:to-gray-dark dark:from-opacity-100 dark:to-opacity-50 via-opacity-50 dark:opacity-25 shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5">
-              <h1 className="text-hxl font-bold text-center text-gray-light p-4 cursor-pointer" onClick={handleEditBoardModalOpen}>
+              <h1
+                className="text-hxl font-bold text-center text-gray-light p-4 cursor-pointer"
+                onClick={handleEditBoardModalOpen}
+              >
                 + New Column
               </h1>
             </div>

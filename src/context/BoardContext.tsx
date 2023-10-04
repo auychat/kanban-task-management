@@ -10,6 +10,7 @@ import {
   IBoardContextValue,
 } from "./BoardInterface";
 import { set } from "react-hook-form";
+import {v4 as uuidv4} from 'uuid';
 
 // Create a new context for managing the boards data
 export const BoardContext = createContext<IBoardContextValue>({
@@ -33,8 +34,22 @@ export const BoardContext = createContext<IBoardContextValue>({
 export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  // Add a unique id to each task and column
+  const boardsDataWithTaskIds: IBoard[] = boardsData.map((board) => ({
+    ...board,
+    columns: board.columns.map((column, cIndex) => ({
+      ...column,
+      id: cIndex.toString(),
+      tasks: column.tasks.map((task) => ({
+        ...task,
+        id: uuidv4(),
+      })),
+    })),
+  }));
+
   // Define the state for the boards data using the useState hook and initialize it with the boardsData array
-  const [boards, setBoards] = useState<IBoard[]>(boardsData);
+  const [boards, setBoards] = useState<IBoard[]>(boardsDataWithTaskIds);
+  // console.log("boards", boards)
 
   const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
@@ -46,9 +61,18 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   // Define the functions for CRUD operations that will be passed down to the context value
 
   // Add a new board to the boards array
-  const addBoard = (board: IBoard) => {
-    setBoards([...boards, board]);
-    setSelectedBoard(board.name);
+  const addBoard = (addBoardData: IBoard) => {
+    const newBoard: IBoard = {
+      name: addBoardData.name,
+      columns: addBoardData.columns.map((column, index) => ({
+        id: index.toString(),
+        name: column.name,
+        tasks: [],
+      })),
+    }
+
+    setBoards([...boards, newBoard]);
+    setSelectedBoard(newBoard.name);
   };
 
   // Update and existing board in the boards array
@@ -82,6 +106,9 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Add a new task to the selected board and update columns accordingly
   const addTask = (task: ITask) => {
+    // Generate a unique id for the new task
+    const taskId = uuidv4();
+
     // Copy the boards array
     const updatedBoards = [...boards];
 
@@ -102,7 +129,10 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     // Add the new task to the selected column
-    selectedBoardToUpdate.columns[columnIndexToUpdate].tasks.push(task);
+    selectedBoardToUpdate.columns[columnIndexToUpdate].tasks.push({
+      ...task,
+      id: taskId,
+    });
 
     // Update the selected board in the updatedBoards array
     updatedBoards[selectedBoardIndex] = selectedBoardToUpdate;

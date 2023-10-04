@@ -22,14 +22,18 @@ const AddBoardModal = ({ closeModal }: AddBoardModalProps) => {
 
   // Handle form submit
   const onSubmit: SubmitHandler<IBoard> = (data) => {
-    // console.log(data);
-    addBoard({
-      name: data.name,
-      columns: columnNames.map((columnName) => ({
-        name: columnName,
-        tasks: [],
-      })),
-    });
+    // Convert column names to columns object
+    const columns = columnNames.map((columnName, index) => ({
+      id: index.toString(),
+      name: columnName,
+      tasks: [],
+    }));
+    
+    // Replace the column names with the columns object
+    data.columns = columns;
+    
+    // console.log("Data send to AddBoard",data);
+    addBoard(data);
 
     closeModal();
   };
