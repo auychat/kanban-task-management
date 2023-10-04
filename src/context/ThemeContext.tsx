@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useState, useEffect, ReactNode, } from "react";
+import { createContext, useState, useEffect, ReactNode } from "react";
 
 // Define the type for the context value
 type ThemeContextType = {
@@ -22,24 +22,39 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState("light");
   const [hideSidebar, setHideSidebar] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
-  const [sreenSizeWidth, setSreenSizeWidth] = useState<number | undefined>(
+  const [screenSizeWidth, setScreenSizeWidth] = useState<number | undefined>(
     undefined
   );
 
+  // Function to load the theme mode and hideSidebar from localStorage
   useEffect(() => {
-    // Load the theme mode from localStorage when the component mounts
     const storedMode =
       typeof window !== "undefined" ? localStorage.getItem("themeMode") : null;
+
+    const storedHideSidebar =
+      typeof window !== "undefined"
+        ? localStorage.getItem("hideSidebar")
+        : null;
+
+    // Theme part
     if (storedMode) {
       setMode(storedMode);
     } else {
       // If no mode is stored, default to "light" and store it in localStorage
       localStorage.setItem("themeMode", "light");
     }
-  }, []);
 
+    if (screenSizeWidth !== undefined) {
+      if (screenSizeWidth < 480) {
+        setHideSidebar(true);
+      } else if (storedHideSidebar !== null) {
+        setHideSidebar(storedHideSidebar === "true");
+      }
+    }
+  }, [screenSizeWidth],);
+
+  // Function to toggle the theme mode
   const toggle = () => {
-    // setMode((prev) => (prev === "light" ? "dark" : "light"));
     const newMode = mode === "light" ? "dark" : "light";
     setMode(newMode);
 
@@ -52,6 +67,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Function to manage the theme mode when it changes
   useEffect(() => {
     // Ensure that the body class matches the current theme mode
     if (mode === "dark") {
@@ -63,15 +79,19 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to toggle hideSidebar
   const toggleHideSidebar = () => {
-    setHideSidebar((prev) => !prev);
+    setHideSidebar((prev) => {
+      const newValue = !prev;
+      localStorage.setItem("hideSidebar", newValue.toString());
+      return newValue;
+    });
   };
 
   // Function to set the screen size width
   useEffect(() => {
-    setSreenSizeWidth(window.innerWidth);
+    setScreenSizeWidth(window.innerWidth);
 
     const handleResize = () => {
-      setSreenSizeWidth(window.innerWidth);
+      setScreenSizeWidth(window.innerWidth);
     };
 
     window.addEventListener("resize", handleResize);
@@ -79,15 +99,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [sreenSizeWidth]);
-
-  useEffect(() => {
-    if (sreenSizeWidth && sreenSizeWidth < 513) {
-      setHideSidebar(true);
-    } else {
-      setHideSidebar(false);
-    }
-  }, [sreenSizeWidth, setHideSidebar]);
+  }, []);
 
   return (
     <ThemeContext.Provider
@@ -98,7 +110,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         toggleHideSidebar,
         selectedBoard,
         setSelectedBoard,
-        screenSizeWidth: sreenSizeWidth,
+        screenSizeWidth: screenSizeWidth,
       }}
     >
       {children}
