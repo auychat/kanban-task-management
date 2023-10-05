@@ -30,6 +30,7 @@ const Content = () => {
     setSelectedColumn,
     selectedTask,
     setSelectedTask,
+    updateTaskStatusDuringDragAndDrop,
   } = useContext(BoardContext);
 
   // Theme context
@@ -126,6 +127,16 @@ const Content = () => {
 
     // Add the task to the destination column
     column?.tasks.splice(destination.index, 0, task!);
+
+    // Find the status based on destination.dropableId
+    const newStatus = currentBoard?.columns.find(
+      (column) => column.id === destination.droppableId
+    )?.name;
+
+    // Update the task status
+    const updatedTask = { ...task!, status: newStatus! };
+    // Update the task status in the boards state
+    updateTaskStatusDuringDragAndDrop(task!.id, updatedTask.status);
 
     // Update the current board
     const updatedBoard = {
@@ -238,7 +249,7 @@ const Content = () => {
         {currentBoard?.columns.length === 0 ? (
           <div className="hidden"></div>
         ) : (
-          <div className="flex flex-col gap-6 w-[280px] mt-[38px] xs:hidden sm:hidden md:hidden">
+          <div className="flex flex-col  gap-6 max-w-[280px] mt-[38px] xs:hidden sm:hidden md:hidden lg:hidden">
             <div className="flex flex-col items-center justify-center gap-2 min-h-[814px] bg-gradient-to-b from-[#E9EFFA] to-[#E9EFFA] from-opacity-100 to-opacity-50 dark:from-gray-dark dark:to-gray-dark dark:from-opacity-100 dark:to-opacity-50 via-opacity-50 dark:opacity-25 shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5">
               <h1
                 className="text-hxl font-bold text-center text-gray-light p-4 cursor-pointer"
@@ -277,7 +288,7 @@ const Content = () => {
 
       {/* IF NO ANY COLUMNS */}
       {(currentBoard?.columns.length === 0 || boards.length === 0) && (
-        <div className="relative max-w-[1240px] h-[calc(100vh-96px)] bg-blue-lighter dark:bg-gray-darker flex items-center justify-center ">
+        <div className="relative h-full w-full bg-blue-lighter dark:bg-gray-darker flex items-center justify-center ">
           <div className="flex flex-col items-center justify-center gap-6 xs:w-[343px]">
             <h2 className="text-hl font-bold text-gray-light xs:text-center">
               This board is empty. Create a new{" "}

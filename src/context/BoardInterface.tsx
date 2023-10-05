@@ -36,5 +36,6 @@ export interface IBoardContextValue {
   selectedTask: { task: ITask; index: number } | null;
   setSelectedTask: (task: { task: ITask; index: number } | null) => void;
   updateTaskStatus: (prevTask:ITask, task: ITask) => void;
+  updateTaskStatusDuringDragAndDrop(taskId: string, newStatus: string): void;
   deleteTask: (task: ITask) => void;
 }

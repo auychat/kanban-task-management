@@ -33,8 +33,12 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
   const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
 
-  const handleStatusChange = () => {
-    setSelectedStatus(selectedTask?.task.status);
+  const handleStatusChange = (newStatus: string) => {
+    const previousTask = selectedTask?.task;
+    const updatedTask = { ...previousTask, status: newStatus };
+
+    updateTaskStatus(previousTask as ITask, updatedTask as ITask);
+    closeTaskDetailModal();
   };
 
   const selectedBoardColumns = boards.find(
@@ -201,7 +205,7 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
 
           {/* Open Edit Delete Task Modal */}
           {isEditDeleteTaskModalOpen && (
-            <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white shadow-md rounded-md top-[80px] right-[-61px] xs:w-[120px] xs:h-[80px] xs:top-[70px] xs:right-[0px] xs:p-2">
+            <div className="absolute w-[192px] h-[94px] p-4 flex flex-col justify-between bg-white dark:bg-gray-darker shadow-md rounded-md top-[80px] right-[-61px] xs:w-[120px] xs:h-[80px] xs:top-[70px] xs:right-[0px] xs:p-2">
               <button
                 type="button"
                 className="text-bl text-gray-light font-medium hover:font-bold cursor-pointer"
@@ -319,11 +323,15 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
           </p>
           <select
             value={selectedTask?.task.status}
-            onChange={handleStatusChange}
+            onChange={(e) => handleStatusChange(e.target.value)}
             className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full bg-white dark:bg-gray-dark focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
           >
             {selectedBoardColumns?.map((column, index) => (
-              <option value={column.name} key={index} className="text-bl font-medium">
+              <option
+                value={column.name}
+                key={index}
+                className="text-bl font-medium"
+              >
                 {column.name}
               </option>
             ))}

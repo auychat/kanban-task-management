@@ -27,6 +27,7 @@ export const BoardContext = createContext<IBoardContextValue>({
   selectedTask: null,
   setSelectedTask: () => {},
   updateTaskStatus: () => {},
+  updateTaskStatusDuringDragAndDrop: () => {},
   deleteTask: () => {},
 });
 
@@ -209,6 +210,48 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     setBoards(updatedBoards);
   };
 
+  // Update the selected task's status during a drag and drop operation
+const updateTaskStatusDuringDragAndDrop = (
+  taskId: string,
+  newStatus: string
+) => {
+  setBoards((prevBoards) =>
+    prevBoards.map((board) => {
+      if (board.name !== selectedBoard) return board;
+
+      const oldColumnIndex = board.columns.findIndex(
+        (column) => column.tasks.some((task) => task.id === taskId)
+      );
+
+      const newColumnIndex = board.columns.findIndex(
+        (column) => column.name === newStatus
+      );
+
+      if (oldColumnIndex === -1 || newColumnIndex === -1) return board;
+
+      const updatedColumns = [...board.columns];
+      const oldColumn = updatedColumns[oldColumnIndex];
+      const newColumn = updatedColumns[newColumnIndex];
+
+      const taskIndex = oldColumn.tasks.findIndex((task) => task.id === taskId);
+
+      if (taskIndex === -1) return board;
+
+      // Find and update the task's status
+      const updatedTask = { ...oldColumn.tasks[taskIndex], status: newStatus };
+
+      // Remove the task from the old column and add it to the new column
+      oldColumn.tasks.splice(taskIndex, 1);
+      newColumn.tasks.push(updatedTask);
+
+      return {
+        ...board,
+        columns: updatedColumns,
+      };
+    })
+  );
+};
+
   // Delete the selected task
   const deleteTask = (task: ITask) => {
     setBoards((prevBoards) =>
@@ -237,6 +280,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     setSelectedTask,
     updateTaskStatus,
     deleteTask,
+    updateTaskStatusDuringDragAndDrop
   };
 
   return (
