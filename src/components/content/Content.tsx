@@ -160,7 +160,7 @@ const Content = () => {
             ? "hidden"
             : currentBoard?.columns.length === 0
             ? "hidden"
-            : "relative flex flex-row gap-6 h-full bg-blue-lighter dark:bg-gray-darker p-6 xs:px-4 xs:flex-col xs:gap-10 xs:min-h-[970px] xs:h-full"
+            : "relative flex flex-row flex-wrap gap-6 h-full bg-blue-lighter dark:bg-gray-darker p-6 xs:px-4 xs:flex-col xs:gap-10 xs:min-h-[970px] xs:h-full"
         }`}
       >
         <DragDropContext onDragEnd={onDragEnd}>
@@ -172,7 +172,7 @@ const Content = () => {
                   key={index}
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="flex flex-col gap-6 min-w-[280px]"
+                  className="flex flex-col gap-6 min-w-[280px] max-w-[280px] xs:min-w-[280px] xs:max-w-full sm:max-w-auto"
                 >
                   {/* Column name */}
                   <div className="relative flex items-center">
@@ -238,7 +238,7 @@ const Content = () => {
         {currentBoard?.columns.length === 0 ? (
           <div className="hidden"></div>
         ) : (
-          <div className="flex flex-col gap-6 w-[280px] mt-[38px] xs:hidden">
+          <div className="flex flex-col gap-6 w-[280px] mt-[38px] xs:hidden sm:hidden md:hidden">
             <div className="flex flex-col items-center justify-center gap-2 min-h-[814px] bg-gradient-to-b from-[#E9EFFA] to-[#E9EFFA] from-opacity-100 to-opacity-50 dark:from-gray-dark dark:to-gray-dark dark:from-opacity-100 dark:to-opacity-50 via-opacity-50 dark:opacity-25 shadow-lg dark:shadow-sm dark:shadow-gray-dark rounded-md py-6 px-3.5">
               <h1
                 className="text-hxl font-bold text-center text-gray-light p-4 cursor-pointer"

@@ -86,15 +86,15 @@ const Topbar = () => {
   };
 
   return (
-    <div className="relative max-h-[96px] h-full w-full border-1 border-l-0 border-blue-lightest dark:border-gray-medium bg-white dark:bg-gray-dark flex flex-row justify-between items-center p-6 xs:max-w-[513px] xs:h-[64px] xs:p-4">
-      <div className="flex flex-row gap-8 items-center xs:gap-4">
+    <div className="relative max-h-[96px] h-full w-full border-1 border-l-0 border-blue-lightest dark:border-gray-medium bg-white dark:bg-gray-dark flex flex-row justify-between items-center p-6 xs:max-w-[480px] xs:h-[64px] xs:p-4 sm:max-w-[768px] sm:h-[80px] sm:py-7 sm:px-6 md:max-w-[1024px] md:h-[80px] md:py-7 md:px-6">
+      <div className="flex flex-row gap-8 items-center xs:gap-4 sm:gap-4">
         {/* Logo Section */}
         <>
           {hideSidebar && (
             <div className="flex pr-8 xs:pr-0">
-              <div className="absolute border-r border-blue-lightest dark:border-gray-medium min-h-[96px] h-full top-0 left-[210px] z-10 xs:hidden"></div>
+              <div className="absolute border-r border-blue-lightest dark:border-gray-medium min-h-[96px] h-full top-0 left-[210px] z-10 xs:hidden sm:min-h-[79px] md:min-h-[79px]"></div>
 
-              {screenSizeWidth! < 513 ? (
+              {screenSizeWidth! < 480 ? (
                 // Mobile Logo
                 <Image
                   src="./assets/logo-mobile.svg"
@@ -117,11 +117,11 @@ const Topbar = () => {
         </>
         {/* For Mobile Devices */}
         <div className="flex flex-row items-center justify-center ">
-          <h1 className="text-hxl font-bold dark:text-white xs:text-hl">
+          <h1 className="text-hxl font-bold dark:text-white xs:text-hl sm:text-[20px]">
             {selectedBoard}
           </h1>
           {/* Chevron Icon Up and Down */}
-          <div className="xs:block">
+          <div className="xs:block sm:hidden md:hidden lg:hidden xl:hidden">
             {isNavBoardModalOpen ? (
               <Image
                 src="./assets/icon-chevron-up.svg"
@@ -147,7 +147,7 @@ const Topbar = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-row gap-6 xs:gap-0">
+      <div className="flex flex-row gap-6 xs:gap-0 sm:gap-0 md:gap-0">
         <Button
           radius="full"
           className={`bg-purple-dark h-12 w-[164px] text-hm font-bold text-white xs:h-[32px] xs:w-[48px] xs:min-w-unit-1 xs:px-0 ${
@@ -165,7 +165,7 @@ const Topbar = () => {
           }
         >
           {/* + Icon */}
-          {screenSizeWidth! < 513 ? (
+          {screenSizeWidth! < 480 ? (
             <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">
               <path
                 fill="#FFF"
@@ -179,7 +179,7 @@ const Topbar = () => {
 
         {/* List Icon */}
         <div
-          className="flex items-center cursor-pointer pl-4 relative"
+          className="flex items-center cursor-pointer pl-4 relative sm:pl-6 md:pl-6"
           onClick={handleListIconClick}
         >
           <svg width="5" height="20" xmlns="http://www.w3.org/2000/svg">

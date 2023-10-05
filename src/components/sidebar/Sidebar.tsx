@@ -43,7 +43,7 @@ const Sidebar = () => {
   return (
     <>
       {!hideSidebar && (
-        <div className="bg-white dark:bg-gray-dark min-w-[300px] w-[300px] min-h-full flex flex-col justify-between border-1 border-blue-lightest dark:border-gray-medium">
+        <div className="bg-white dark:bg-gray-dark min-w-[300px] w-[300px] min-h-full flex flex-col justify-between border-1 border-blue-lightest dark:border-gray-medium sm:min-w-[261px] sm:w-[261px] md:min-w-[261px] md:w-[261px]">
           <div className="flex flex-col gap-8">
             {/* Logo Section */}
             <div className="flex p-8">
@@ -70,7 +70,7 @@ const Sidebar = () => {
                   onClick={() => setSelectedBoard(item.name)}
                 >
                   <div
-                    className={`absolute h-[48px] w-[276px] rounded-r-full z-0 left-0  ${
+                    className={`absolute h-[48px] w-[276px] rounded-r-full z-0 left-0 sm:w-[240px] md:w-[240px]  ${
                       selectedBoard === item.name
                         ? "bg-purple-dark transition-color duration-300"
                         : "group-hover:bg-purple-dark group-hover:dark:bg-white opacity-10 dark:opacity-100 transition-color duration-300"

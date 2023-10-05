@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main className="w-full h-full flex flex-row">
       <Sidebar />
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full min-h-[1024px]">
         <Topbar />
         <Content />
       </div>
