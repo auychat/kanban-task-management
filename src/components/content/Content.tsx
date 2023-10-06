@@ -171,7 +171,7 @@ const Content = () => {
             ? "hidden"
             : currentBoard?.columns.length === 0
             ? "hidden"
-            : "relative flex flex-row flex-wrap gap-6 h-full bg-blue-lighter dark:bg-gray-darker p-6 xs:px-4 xs:flex-col xs:gap-10 xs:min-h-[970px] xs:h-full"
+            : "relative flex flex-row flex-wrap xl:flex-nowrap gap-6 h-full bg-blue-lighter dark:bg-gray-darker p-6 xs:px-4 xs:flex-col xs:gap-10 xs:min-h-[970px] xs:h-full"
         }`}
       >
         <DragDropContext onDragEnd={onDragEnd}>
