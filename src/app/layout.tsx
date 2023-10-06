@@ -19,6 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="any" />
+      </head>
       <ThemeProvider>
         <body className={PlusJakartaSans.className}>
           <BoardProvider>{children}</BoardProvider>
