@@ -322,6 +322,7 @@ const TaskDetailModal = ({ closeTaskDetailModal }: TaskDetailModalProps) => {
             Current Status
           </p>
           <select
+            id="status-select"
             value={selectedTask?.task.status}
             onChange={(e) => handleStatusChange(e.target.value)}
             className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full bg-white dark:bg-gray-dark focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"

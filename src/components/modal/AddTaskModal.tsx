@@ -77,12 +77,11 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           {/* Title */}
           <div className="flex flex-col gap-2 relative">
-            <label
-              htmlFor="task-title"
+            <p
               className="text-bm font-bold text-gray-light dark:text-white"
             >
               Title
-            </label>
+            </p>
             <input
               id="task-title"
               type="text"
@@ -104,12 +103,11 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
 
           {/* Description */}
           <div className="flex flex-col gap-4">
-            <label
-              htmlFor="task-description"
+            <p
               className="text-bm font-bold text-gray-light dark:text-white"
             >
               Description
-            </label>
+            </p>
             <textarea
               id="description"
               {...register("description", { required: false })}
@@ -120,12 +118,11 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
 
           {/* Subtasks */}
           <div className="flex flex-col gap-3 relative">
-            <label
-              htmlFor="subtasks"
+            <p
               className="text-bm font-bold text-gray-light dark:text-white"
             >
               Subtasks
-            </label>
+            </p>
 
             {/* Subtask Values */}
             {fields.map((field, index) => (
@@ -193,14 +190,13 @@ const AddTaskModal = ({ closeTaskModal }: AddTaskModalProps) => {
 
           {/* Status */}
           <div className="flex flex-col gap-3 relative group">
-            <label
-              htmlFor="status"
+            <p
               className="text-bm font-bold text-gray-light dark:text-white"
             >
               Status
-            </label>
+            </p>
             <select
-              id="priority"
+              id="select-status"
               {...register("status", { required: true })}
               className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full bg-white dark:bg-gray-dark focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
             >

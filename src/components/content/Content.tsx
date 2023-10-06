@@ -275,13 +275,16 @@ const Content = () => {
             className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full xs:hidden"
             onClick={toggleHideSidebar}
           >
-            <Image
-              src="./assets/icon-show-sidebar.svg"
-              alt="show-sidebar-icon"
-              width={16}
-              height={16}
-              className="w-[16px] h-auto object-contain"
-            />
+            <div className="relative w-4 h-4">
+              <Image
+                src="./assets/icon-show-sidebar.svg"
+                alt="show-sidebar-icon"
+                fill={true}
+                // width={16}
+                // height={16}
+                className="w-full h-auto object-contain"
+              />
+            </div>
           </div>
         )}
       </div>
@@ -326,13 +329,16 @@ const Content = () => {
               className="absolute bottom-8 left-0 cursor-pointer bg-purple-dark hover:bg-purple-light h-[48px] w-[56px] flex items-center justify-center rounded-r-full xs:hidden"
               onClick={toggleHideSidebar}
             >
+            <div className="relative w-4 h-4">
               <Image
                 src="./assets/icon-show-sidebar.svg"
                 alt="show-sidebar-icon"
-                width={16}
-                height={16}
-                className="w-[16px] h-auto object-contain"
+                fill={true}
+                // width={16}
+                // height={16}
+                className="w-full h-auto object-contain"
               />
+            </div>
             </div>
           )}
         </div>

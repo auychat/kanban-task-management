@@ -42,7 +42,7 @@ const EditTaskModal = ({
 
   // Handle form submit
   const onSubmit: SubmitHandler<ITask> = (data) => {
-    console.log(data);
+    // console.log(data);
     updateTask(data);
     closeEditTaskModal();
   };
@@ -109,12 +109,11 @@ const EditTaskModal = ({
 
           {/* Description */}
           <div className="flex flex-col gap-4">
-            <label
-              htmlFor="task-description"
+            <p
               className="text-bm font-bold text-gray-light dark:text-white"
             >
               Description
-            </label>
+            </p>
             <textarea
               id="description"
               {...register("description", { required: false })}
@@ -125,12 +124,11 @@ const EditTaskModal = ({
 
           {/* Subtasks */}
           <div className="flex flex-col gap-3 relative">
-            <label
-              htmlFor="subtasks"
+            <p
               className="text-bm font-bold text-gray-light dark:text-white"
             >
               Subtasks
-            </label>
+            </p>
 
             {/* Subtask Values */}
             {fields.map((field, index) => (
@@ -198,14 +196,13 @@ const EditTaskModal = ({
 
           {/* Status */}
           <div className="flex flex-col gap-3 relative group">
-            <label
-              htmlFor="status"
+            <p
               className="text-bm font-bold text-gray-light dark:text-white"
             >
               Status
-            </label>
+            </p>
             <select
-              id="priority"
+              id="status-select"
               {...register("status", { required: true })}
               className="text-bl text-black dark:text-white font-medium px-4 border border-gray-light border-opacity-25 rounded-[4px] h-10 w-full bg-white dark:bg-gray-dark focus:border-purple-dark focus:outline-none appearance-none cursor-pointer"
             >

@@ -49,6 +49,7 @@ const Sidebar = () => {
             <div className="flex p-8">
               <Image
                 id="logo-img"
+                priority={true} 
                 src={mode === "light" ? "/assets/logo-dark.svg" : "/assets/logo-light.svg"}
                 alt="logo"
                 width={152}

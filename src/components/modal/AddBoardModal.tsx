@@ -28,10 +28,10 @@ const AddBoardModal = ({ closeModal }: AddBoardModalProps) => {
       name: columnName,
       tasks: [],
     }));
-    
+
     // Replace the column names with the columns object
     data.columns = columns;
-    
+
     // console.log("Data send to AddBoard",data);
     addBoard(data);
 
@@ -109,12 +109,11 @@ const AddBoardModal = ({ closeModal }: AddBoardModalProps) => {
 
           {/* Board Columns */}
           <div className="flex flex-col gap-3 ">
-            <label
-              htmlFor="board-column"
+            <p
               className="text-bm font-bold text-gray-light dark:text-white"
             >
               Board Columns
-            </label>
+            </p>
 
             {/* Column Names */}
             {columnNames.map((columnName, index) => (

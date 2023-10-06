@@ -98,12 +98,11 @@ const EditBoardModal = ({
 
           {/* Board Columns */}
           <div className="flex flex-col gap-3 ">
-            <label
-              htmlFor="board-column"
+            <p
               className="text-bm font-bold text-gray-light dark:text-white"
             >
               Board Columns
-            </label>
+            </p>
 
             {/* Column Names */}
             {fields.map((field, index) => (

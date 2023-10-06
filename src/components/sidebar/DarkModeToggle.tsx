@@ -46,6 +46,7 @@ const DarkModeToggle = () => {
             "w-[40px] h-[20px] bg-purple-dark group-data-[selected=true]:bg-purple-dark",
           thumb: cn("w-[14px] h-[14px] bg-white"),
         }}
+        aria-label="Dark Mode Toggle"
       />
       <Image
         src="./assets/icon-dark-theme.svg"

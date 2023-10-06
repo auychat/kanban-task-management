@@ -96,13 +96,15 @@ const Topbar = () => {
 
               {screenSizeWidth! < 480 ? (
                 // Mobile Logo
-                <Image
-                  src="./assets/logo-mobile.svg"
-                  alt="mobile-logo"
-                  width={152}
-                  height={25}
-                  className="w-auto h-auto"
-                />
+                <div className="relative w-[24px] h-[25px]">
+                  <Image
+                    src="./assets/logo-mobile.svg"
+                    alt="mobile-logo"
+                    priority={true}
+                    fill={true}
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
               ) : (
                 <Image
                   src={logoSrc}
@@ -143,7 +145,11 @@ const Topbar = () => {
             )}
 
             {/* Open MobileNavBoardModal */}
-            {isNavBoardModalOpen && <MobileNavBoardModal closeMobileNavBoardModal={handleMobileNavBoardModalClose} />}
+            {isNavBoardModalOpen && (
+              <MobileNavBoardModal
+                closeMobileNavBoardModal={handleMobileNavBoardModalClose}
+              />
+            )}
           </div>
         </div>
       </div>
