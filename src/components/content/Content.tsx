@@ -191,12 +191,12 @@ const Content = () => {
                       className="absolute w-[15px] h-[15px] rounded-full"
                       style={{ backgroundColor: randomColorbyIndex(index) }}
                     ></div>
-                    <h6 className="text-hs pl-6 font-bold text-gray-light">
+                    <h3 className="text-hs pl-6 font-bold text-gray-light">
                       {/* Color before column name */}
                       {column.name.toLocaleUpperCase()} {"("}
                       {column.tasks ? column.tasks.length : 0}
                       {")"}
-                    </h6>
+                    </h3>
                   </div>
 
                   {/* Column tasks */}
