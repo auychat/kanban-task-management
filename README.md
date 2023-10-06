@@ -30,11 +30,14 @@ Users should be able to:
 - **Bonus**: Build this project as a full-stack application
 
 ### Screenshot
-![](./screenshot.jpg)
+![Desktoplight](./screenshots/Screenshot-kanban-desktop-light.png)
+![Desktopdark](./screenshots/Screenshot-kanban-desktop-dark.png)
+![hideLight](./screenshots/Screenshot-kanban-hide-white.png)
+![hideDark](./screenshots/Screenshot-kanban-hide-dark.png)
 
 ### Links
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Solution URL: [Solution URL](https://github.com/auychat/kanban-task-management)
+- Live Site URL: [Live site](https://kanban-task-management-pi.vercel.app/)
 
 ## My process
 
